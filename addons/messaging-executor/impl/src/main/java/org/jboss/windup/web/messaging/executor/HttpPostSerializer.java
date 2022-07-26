@@ -89,7 +89,7 @@ public class HttpPostSerializer extends AbstractSerializer implements ExecutionS
             File resultsArchivePathFile = resultsArchivePath.toFile();
             LOG.info("Completed generating result archive (" + (resultsArchivePathFile.length() / 1048576) + " MB), posting results to the server...");
 
-            // Send the post data to the mta core service
+            // Send the post data to the windup core service
             try (FileInputStream fileInputStream = new FileInputStream(resultsArchivePathFile))
             {
                 sendResults(execution.getId(), fileInputStream);

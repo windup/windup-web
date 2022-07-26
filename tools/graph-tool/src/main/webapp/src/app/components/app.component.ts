@@ -111,7 +111,7 @@ export class AppComponent implements AfterViewInit {
     }
 
     private getAvailableTypes() {
-        this._http.get("/mta-web/api/furnace/graph/introspect/type-list")
+        this._http.get("/windup-web/api/furnace/graph/introspect/type-list")
             .map(res => res.json())
             .subscribe(result => {
                 this.types = result;
@@ -119,12 +119,12 @@ export class AppComponent implements AfterViewInit {
     }
 
     private getAllExecutions() {
-        this._http.get("/mta-web/api/windup/executions")
+        this._http.get("/windup-web/api/windup/executions")
             .map(res => res.json())
             .subscribe((executions: any[]) => {
                 this.executions = [];
                 executions.forEach((execution) => {
-                    this._http.get("/mta-web/api/migrationProjects/get/" + execution.projectId)
+                    this._http.get("/windup-web/api/migrationProjects/get/" + execution.projectId)
                         .map(res => res.json())
                         .subscribe(project => {
                             this.executions.push({execution: execution, project: project});

@@ -40,7 +40,7 @@ export const Welcome: React.FC<WelcomeProps> = ({ onPrimaryAction }) => {
         To learn more, visit the
         <a
           target="_blank"
-          href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+          href={Theme.documentationURL}
           rel="noopener noreferrer"
         >
           documentation

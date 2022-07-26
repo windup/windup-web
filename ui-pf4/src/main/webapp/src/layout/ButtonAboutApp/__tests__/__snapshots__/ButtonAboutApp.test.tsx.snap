@@ -18,12 +18,12 @@ exports[`Test snapshot :: open modal 1`] = `
     appendTo={null}
     backgroundImageSrc=""
     brandImageAlt="Brand Image"
-    brandImageSrc="mta-logo.svg"
+    brandImageSrc="windup-logo.svg"
     className="about-app__component"
     isOpen={true}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Migration Toolkit for Applications"
+    productName="Windup Migration Toolkit for Applications"
     trademark=""
   >
     <TextContent
@@ -34,11 +34,11 @@ exports[`Test snapshot :: open modal 1`] = `
       </h4>
       <p>
         <a
-          href="https://developers.redhat.com/products/mta/overview/"
+          href="https://windup.github.io/"
           rel="noopener noreferrer"
           target="_blank"
         >
-          Migration Toolkit for Applications
+          Windup Migration Toolkit for Applications
         </a>
          
         allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
@@ -56,7 +56,7 @@ exports[`Test snapshot :: open modal 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications
+            Windup Migration Toolkit for Applications
              Core
           </span>
         </GridItem>
@@ -71,7 +71,7 @@ exports[`Test snapshot :: open modal 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications
+            Windup Migration Toolkit for Applications
              Web Console
           </span>
         </GridItem>
@@ -87,7 +87,7 @@ exports[`Test snapshot :: open modal 1`] = `
       <List>
         <ListItem>
           <a
-            href="https://developers.redhat.com/products/mta/overview/"
+            href="https://windup.github.io/"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -96,7 +96,7 @@ exports[`Test snapshot :: open modal 1`] = `
         </ListItem>
         <ListItem>
           <a
-            href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+            href="https://windup.github.io/"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -218,12 +218,12 @@ exports[`Test snapshot 1`] = `
     appendTo={null}
     backgroundImageSrc=""
     brandImageAlt="Brand Image"
-    brandImageSrc="mta-logo.svg"
+    brandImageSrc="windup-logo.svg"
     className="about-app__component"
     isOpen={false}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Migration Toolkit for Applications"
+    productName="Windup Migration Toolkit for Applications"
     trademark=""
   >
     <TextContent
@@ -234,11 +234,11 @@ exports[`Test snapshot 1`] = `
       </h4>
       <p>
         <a
-          href="https://developers.redhat.com/products/mta/overview/"
+          href="https://windup.github.io/"
           rel="noopener noreferrer"
           target="_blank"
         >
-          Migration Toolkit for Applications
+          Windup Migration Toolkit for Applications
         </a>
          
         allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
@@ -256,7 +256,7 @@ exports[`Test snapshot 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications
+            Windup Migration Toolkit for Applications
              Core
           </span>
         </GridItem>
@@ -271,7 +271,7 @@ exports[`Test snapshot 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications
+            Windup Migration Toolkit for Applications
              Web Console
           </span>
         </GridItem>
@@ -287,7 +287,7 @@ exports[`Test snapshot 1`] = `
       <List>
         <ListItem>
           <a
-            href="https://developers.redhat.com/products/mta/overview/"
+            href="https://windup.github.io/"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -296,7 +296,7 @@ exports[`Test snapshot 1`] = `
         </ListItem>
         <ListItem>
           <a
-            href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+            href="https://windup.github.io/"
             rel="noopener noreferrer"
             target="_blank"
           >

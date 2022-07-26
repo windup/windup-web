@@ -8,8 +8,8 @@
         <version>5.3.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mta-ear</artifactId>
-    <name>MTA Web Console</name>
+    <artifactId>windup-ear</artifactId>
+    <name>Windup Web Console</name>
     <packaging>ear</packaging>
 
     <dependencies>
@@ -28,7 +28,7 @@
     </dependencies>
 
     <build>
-        <finalName>mta</finalName>
+        <finalName>windup</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -39,14 +39,14 @@
                        <webModule>
                             <groupId>org.jboss.windup.web</groupId>
                             <artifactId>windup-web-services</artifactId>
-                            <contextRoot>/mta-web/api</contextRoot>
+                            <contextRoot>/windup-web/api</contextRoot>
                             <bundleFileName>api.war</bundleFileName>
                         </webModule>
                         <webModule>
                             <groupId>org.jboss.windup.web</groupId>
                             <artifactId>windup-web-ui-pf4</artifactId>
-                            <contextRoot>/mta-ui</contextRoot>
-                            <bundleFileName>mta-ui.war</bundleFileName>
+                            <contextRoot>/windup-ui</contextRoot>
+                            <bundleFileName>windup-ui.war</bundleFileName>
                         </webModule>
                     </modules>
                     <outputFileNameMapping>no-version</outputFileNameMapping>
