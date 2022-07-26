@@ -160,7 +160,7 @@
                             <overwrite>false</overwrite>
                             <addonRepository>${project.build.directory}/classes/${windup.distribution.name}-${version.windup}/addons</addonRepository>
                             <addonIds>
-                                <addonId>org.jboss.windup:windup-server-provider-spi,${project.version}</addonId>
+                                <addonId>org.jboss.windup:windup-server-provider-spi,${version.windup}</addonId>
                                 <addonId>org.jboss.windup.web.addons:windup-web-support,${project.version}</addonId>
                                 <addonId>org.jboss.windup.web.addons:windup-web-messaging-executor,${project.version}</addonId>
                             </addonIds>
