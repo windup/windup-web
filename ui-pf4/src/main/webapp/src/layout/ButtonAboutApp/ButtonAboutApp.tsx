@@ -67,7 +67,7 @@ export const ButtonAboutApp: React.FC = () => {
           <h4>About</h4>
           <p>
             <a
-              href="https://developers.redhat.com/products/mta/overview/"
+              href={Theme.websiteURL}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -125,7 +125,7 @@ export const ButtonAboutApp: React.FC = () => {
           <List>
             <ListItem>
               <a
-                href="https://developers.redhat.com/products/mta/overview/"
+                href={Theme.websiteURL}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -134,7 +134,7 @@ export const ButtonAboutApp: React.FC = () => {
             </ListItem>
             <ListItem>
               <a
-                href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+                href={Theme.documentationURL}
                 target="_blank"
                 rel="noopener noreferrer"
               >

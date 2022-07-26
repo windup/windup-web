@@ -89,12 +89,12 @@ public class FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServlet
 
             /*
              * 1) Read env. variable, if set,
-             * 2) If not, use system property mta.apiServer.url as fallback,
-             * 3) If system property not set, use current address + mta-web-services as fallback
+             * 2) If not, use system property windup.apiServer.url as fallback,
+             * 3) If system property not set, use current address + windup-web-services as fallback
              */
             String apiServerUrl = this.readEnvVariable(
-                    "MTA_API_SERVER_URL",
-                    System.getProperty("mta.apiServer.url", serverAddress + "/mta-ui/api")
+                    "WINDUP_API_SERVER_URL",
+                    System.getProperty("windup.apiServer.url", serverAddress + "/windup-ui/api")
             );
 
             hashModel.put("apiServerUrl", apiServerUrl);

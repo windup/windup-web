@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-web>
-    <context-root>mta-web/graph-tool</context-root>
+    <context-root>windup-web/graph-tool</context-root>
 </jboss-web>

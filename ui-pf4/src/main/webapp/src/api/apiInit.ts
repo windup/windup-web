@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const API_BASE_URL = "/mta-ui/api";
+export const API_BASE_URL = "/windup-ui/api";
 
 export const initApi = () => {
   axios.defaults.baseURL = `${API_BASE_URL}`;

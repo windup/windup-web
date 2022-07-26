@@ -1,9 +1,9 @@
 {
-  "realm": "mta",
+  "realm": "windup",
   "auth-server-url": "http://localhost:8180/auth",
-  "resource": "mta-web",
+  "resource": "windup-web",
   "credentials": {
-    "client-id": "mta-web",
+    "client-id": "windup-web",
     "secret": "public",
     "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhzGkMexMJ/stKe4ApsQM725i5pqnNlc5M8CB2uj8Lc77juFRKIjYwCJ7Zc1Zy2w0uaOHYBWuRnJ+9uQX6WtYmq4+FH09LyAH2rN4pi/nvdP8f9rU/vEKLpeMwcSbPgp2xKY+G2Ow5Uxh+CEZ5+3ZkNnwn99b9MP2Wad/l1UN7ObepRCy7zZNxxbB6qV4uqCbE02ZV8AXzgVia22D4yo6qpTVzULsNCdXuMwDkMvqPYylZlxq6L6pXxDyNJSwPZ9mDQW5adpS+CC4Rs1A32rU432IWw45qloIMAzJbpjdAD8aNmfXw0V89qj2SKbRisrDDKAWblyxewlmj3DqNPfBWQIDAQAB",
     "ssl-required": "external",

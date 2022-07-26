@@ -35,7 +35,7 @@
         <windup.web.developer.connection>scm:git:git@github.com:windup/windup-web.git</windup.web.developer.connection>
         <windup.web.scm.url>http://github.com/windup/windup-web</windup.web.scm.url>
 
-        <windup.distribution.name>mta-cli</windup.distribution.name>
+        <windup.distribution.name>windup-cli</windup.distribution.name>
         <version.hibernate>5.3.20.Final</version.hibernate>
         <version.undertow>2.2.5.Final</version.undertow>
         <version.httpcomponents>4.5.13</version.httpcomponents>
@@ -359,10 +359,23 @@
         </profile>
 
         <profile>
-            <id>mta</id>
+            <id>windup</id>
             <activation>
                 <property>
                     <name>!downstream</name>
+                </property>
+            </activation>
+            <properties>
+                <product-name>windup</product-name>
+                <windup.distribution.name>windup-cli</windup.distribution.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>mta</id>
+            <activation>
+                <property>
+                    <name>downstream</name>
+                    <value>mta</value>
                 </property>
             </activation>
             <properties>
@@ -383,6 +396,5 @@
                 <windup.distribution.name>tackle-cli</windup.distribution.name>
             </properties>
         </profile>
-
     </profiles>
 </project>
