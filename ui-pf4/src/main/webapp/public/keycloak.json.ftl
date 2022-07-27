@@ -1,8 +1,8 @@
 {
-    "realm": "mta",
+    "realm": "windup",
     "realm-public-key": "${keycloak.publicKey}",
     "auth-server-url": "${keycloak.serverUrl}",
     "ssl-required": "none",
-    "resource": "mta-web",
+    "resource": "windup-web",
     "public-client": true
 }

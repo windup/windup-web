@@ -294,7 +294,7 @@
     </dependencies>
 
     <build>
-        <finalName>mta-web/api</finalName>
+        <finalName>windup-web/api</finalName>
 
         <resources>
             <resource>
@@ -393,7 +393,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/mta-cli" />
+                                <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/windup-cli" />
                             </target>
                         </configuration>
                     </execution>

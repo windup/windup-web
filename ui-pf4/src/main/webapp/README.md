@@ -1,4 +1,4 @@
-# MTA Web Console UI
+# WINDUP Web Console UI
 
 UI based on [Patternfly 4](https://www.patternfly.org/v4/) and [ReactJS](https://reactjs.org/). This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
@@ -11,15 +11,15 @@ You need:
 
 ## Prepare the backend
 
-You need to have MTA Web Console running. You can download it from [Red Hat Developers](https://developers.redhat.com/products/mta/download) or build it yourself from the source code following the instructions [building-the-windup-project](https://github.com/windup/windup-web#building-the-windup-project)
+You need to have WINDUP Web Console running. You can download it from [Red Hat Developers](https://developers.redhat.com/products/mta/download) or build it yourself from the source code following the instructions [building-the-windup-project](https://github.com/windup/windup-web#building-the-windup-project)
 
-- Run the `$MTA_HOME/run_mta.sh` and wait until the server starts. Verify the server is running opening http://localhost:8080 in your browser.
+- Run the `$WINDUP_HOME/run_windup.sh` and wait until the server starts. Verify the server is running opening http://localhost:8080 in your browser.
 - Configure Keycloak's client to have http://localhost:3000 as a valid redirect URI, folow the steps below to do it.
 
 Login to Keycloak:
 
 ```shell
-$MTA_HOME/bin/kcadm.sh config credentials \
+$WINDUP_HOME/bin/kcadm.sh config credentials \
 --server http://localhost:8080/auth \
 --realm master \
 --user admin \
@@ -27,18 +27,18 @@ $MTA_HOME/bin/kcadm.sh config credentials \
 --client admin-cli
 ```
 
-Change Keycloak's client `mta-web`:
+Change Keycloak's client `windup-web`:
 
 ```shell
-$MTA_HOME/bin/kcadm.sh update realms/mta/clients/739a78cd-ab8d-427a-93f7-4af38f0eab31 \
+$WINDUP_HOME/bin/kcadm.sh update realms/windup/clients/739a78cd-ab8d-427a-93f7-4af38f0eab31 \
 -s id="739a78cd-ab8d-427a-93f7-4af38f0eab31" \
--s clientId="mta-web" \
--s adminUrl="/mta-web" \
--s "redirectUris=[\"http://localhost:3000/*\", \"/mta-web/*\", \"/mta-ui/*\"]" \
+-s clientId="windup-web" \
+-s adminUrl="/windup-web" \
+-s "redirectUris=[\"http://localhost:3000/*\", \"/windup-web/*\", \"/windup-ui/*\"]" \
 -s "webOrigins=[\"http://localhost:3000\", \"/\"]"
 ```
 
-> `$MTA_HOME` represents the folder where MTA Web Console is running.
+> `$WINDUP_HOME` represents the folder where WINDUP Web Console is running.
 
 ## Run the UI in Dev mode
 

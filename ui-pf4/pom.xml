@@ -133,7 +133,7 @@
     </dependencies>
 
     <build>
-        <finalName>mta-ui</finalName>
+        <finalName>windup-ui</finalName>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>

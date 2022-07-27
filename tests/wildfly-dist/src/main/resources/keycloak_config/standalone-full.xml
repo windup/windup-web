@@ -480,25 +480,25 @@
         <subsystem xmlns="urn:jboss:domain:jsf:1.1"/>
         <subsystem xmlns="urn:jboss:domain:jsr77:1.0"/>
         <subsystem xmlns="urn:jboss:domain:keycloak:1.2">
-            <secure-deployment name="mta-web.war">
-                <realm>mta</realm>
-                <resource>mta-web</resource>
+            <secure-deployment name="windup-web.war">
+                <realm>windup</realm>
+                <resource>windup-web</resource>
                 <public-client>true</public-client>
                 <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
                 <auth-server-url>${keycloak.server.url}</auth-server-url>
                 <ssl-required>EXTERNAL</ssl-required>
             </secure-deployment>
-            <secure-deployment name="mta-ui.war">
-                <realm>mta</realm>
-                <resource>mta-web</resource>
+            <secure-deployment name="windup-ui.war">
+                <realm>windup</realm>
+                <resource>windup-web</resource>
                 <public-client>true</public-client>
                 <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
                 <auth-server-url>${keycloak.server.url}</auth-server-url>
                 <ssl-required>EXTERNAL</ssl-required>
             </secure-deployment>
             <secure-deployment name="api.war">
-                <realm>mta</realm>
-                <resource>mta-web</resource>
+                <realm>windup</realm>
+                <resource>windup-web</resource>
                 <public-client>true</public-client>
                 <realm-public-key>${keycloak.realm.public.key}</realm-public-key>
                 <auth-server-url>${keycloak.server.url}</auth-server-url>
