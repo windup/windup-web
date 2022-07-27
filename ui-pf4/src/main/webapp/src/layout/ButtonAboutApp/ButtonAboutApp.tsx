@@ -63,7 +63,7 @@ export const ButtonAboutApp: React.FC = () => {
         productName={Theme.name}
         className="about-app__component"
       >
-        <TextContent className="pf-u-py-xl">
+        <TextContent>
           <h4>About</h4>
           <p>
             <a
