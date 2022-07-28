@@ -23,7 +23,7 @@ exports[`Test snapshot :: open modal 1`] = `
     isOpen={true}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Windup Migration Toolkit for Applications"
+    productName="Windup"
     trademark=""
   >
     <TextContent>
@@ -36,7 +36,7 @@ exports[`Test snapshot :: open modal 1`] = `
           rel="noopener noreferrer"
           target="_blank"
         >
-          Windup Migration Toolkit for Applications
+          Windup
         </a>
          
         allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
@@ -54,7 +54,7 @@ exports[`Test snapshot :: open modal 1`] = `
           <span
             className="dt"
           >
-            Windup Migration Toolkit for Applications
+            Windup
              Core
           </span>
         </GridItem>
@@ -69,7 +69,7 @@ exports[`Test snapshot :: open modal 1`] = `
           <span
             className="dt"
           >
-            Windup Migration Toolkit for Applications
+            Windup
              Web Console
           </span>
         </GridItem>
@@ -253,7 +253,7 @@ exports[`Test snapshot 1`] = `
     isOpen={false}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Windup Migration Toolkit for Applications"
+    productName="Windup"
     trademark=""
   >
     <TextContent>
@@ -266,7 +266,7 @@ exports[`Test snapshot 1`] = `
           rel="noopener noreferrer"
           target="_blank"
         >
-          Windup Migration Toolkit for Applications
+          Windup
         </a>
          
         allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
@@ -284,7 +284,7 @@ exports[`Test snapshot 1`] = `
           <span
             className="dt"
           >
-            Windup Migration Toolkit for Applications
+            Windup
              Core
           </span>
         </GridItem>
@@ -299,7 +299,7 @@ exports[`Test snapshot 1`] = `
           <span
             className="dt"
           >
-            Windup Migration Toolkit for Applications
+            Windup
              Web Console
           </span>
         </GridItem>
