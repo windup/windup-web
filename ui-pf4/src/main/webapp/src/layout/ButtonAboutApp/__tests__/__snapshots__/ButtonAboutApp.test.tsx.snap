@@ -26,9 +26,7 @@ exports[`Test snapshot :: open modal 1`] = `
     productName="Windup Migration Toolkit for Applications"
     trademark=""
   >
-    <TextContent
-      className="pf-u-py-xl"
-    >
+    <TextContent>
       <h4>
         About
       </h4>
@@ -105,9 +103,41 @@ exports[`Test snapshot :: open modal 1`] = `
         </ListItem>
       </List>
     </TextContent>
-    <div
-      className="pf-c-about-modal-box__strapline"
+    <TextContent
+      className="pf-u-py-xl"
     >
+      <p>
+        The Icon Library used in this project is a derivative of the
+         
+        <a
+          href="https://www.redhat.com/en/about/brand/standards/icons/standard-icons"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Standard Icons library
+        </a>
+         
+        by
+         
+        <a
+          href="https://www.redhat.com/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Red Hat
+        </a>
+        , used under
+         
+        <a
+          href="https://creativecommons.org/licenses/by/4.0/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          CC BY 4.0
+        </a>
+      </p>
+    </TextContent>
+    <div>
       <Flex>
         <FlexItem>
           <a
@@ -226,9 +256,7 @@ exports[`Test snapshot 1`] = `
     productName="Windup Migration Toolkit for Applications"
     trademark=""
   >
-    <TextContent
-      className="pf-u-py-xl"
-    >
+    <TextContent>
       <h4>
         About
       </h4>
@@ -305,9 +333,41 @@ exports[`Test snapshot 1`] = `
         </ListItem>
       </List>
     </TextContent>
-    <div
-      className="pf-c-about-modal-box__strapline"
+    <TextContent
+      className="pf-u-py-xl"
     >
+      <p>
+        The Icon Library used in this project is a derivative of the
+         
+        <a
+          href="https://www.redhat.com/en/about/brand/standards/icons/standard-icons"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Standard Icons library
+        </a>
+         
+        by
+         
+        <a
+          href="https://www.redhat.com/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Red Hat
+        </a>
+        , used under
+         
+        <a
+          href="https://creativecommons.org/licenses/by/4.0/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          CC BY 4.0
+        </a>
+      </p>
+    </TextContent>
+    <div>
       <Flex>
         <FlexItem>
           <a
