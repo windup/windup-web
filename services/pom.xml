@@ -361,7 +361,7 @@
                         <inherited>false</inherited>
                         <configuration>
                             <overwrite>false</overwrite>
-                            <addonRepository>${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup}/addons</addonRepository>
+                            <addonRepository>${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup.cli}/addons</addonRepository>
                             <addonIds>
                                 <addonId>org.jboss.windup.web.addons:windup-web-support,${project.version}</addonId>
                                 <addonId>org.jboss.windup.web.addons:windup-web-messaging-executor,${project.version}</addonId>
@@ -381,7 +381,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" />
+                                <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup.cli}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" />
                             </target>
                         </configuration>
                     </execution>
