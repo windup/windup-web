@@ -63,7 +63,7 @@ export const ButtonAboutApp: React.FC = () => {
         productName={Theme.name}
         className="about-app__component"
       >
-        <TextContent className="pf-u-py-xl">
+        <TextContent>
           <h4>About</h4>
           <p>
             <a
@@ -143,7 +143,35 @@ export const ButtonAboutApp: React.FC = () => {
             </ListItem>
           </List>
         </TextContent>
-        <div className="pf-c-about-modal-box__strapline">
+        <TextContent className="pf-u-py-xl">
+          <p>
+            The Icon Library used in this project is a derivative of the{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.redhat.com/en/about/brand/standards/icons/standard-icons"
+            >
+              Standard Icons library
+            </a>{" "}
+            by{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.redhat.com/"
+            >
+              Red Hat
+            </a>
+            , used under{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://creativecommons.org/licenses/by/4.0/"
+            >
+              CC BY 4.0
+            </a>
+          </p>
+        </TextContent>
+        <div>
           <Flex>
             <FlexItem>
               <a

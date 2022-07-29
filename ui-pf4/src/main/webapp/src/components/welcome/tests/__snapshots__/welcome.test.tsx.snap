@@ -20,10 +20,10 @@ exports[`Welcome Renders without crashing 1`] = `
     size="lg"
   >
     Welcome to 
-    Windup Migration Toolkit for Applications
+    Windup
   </Title>
   <EmptyStateBody>
-    Windup Migration Toolkit for Applications
+    Windup
      helps you assess and perform large-scale application migrations and modernizations. Start by creating a project for your applications.
   </EmptyStateBody>
   <Button

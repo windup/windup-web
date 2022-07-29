@@ -26,7 +26,7 @@ type ThemeListType = {
 
 const themeList: ThemeListType = {
   windup: {
-    name: "Windup Migration Toolkit for Applications",
+    name: "Windup",
     logoSrc: windupLogo,
     logoNavbarSrc: windupNavBrandImage,
     faviconSrc: windupFavicon,
