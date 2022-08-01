@@ -18,7 +18,6 @@
 
     <modules>
         <module>wildfly-dist</module>
-        <module>test-authentication-client</module>
     </modules>
 
 </project>
