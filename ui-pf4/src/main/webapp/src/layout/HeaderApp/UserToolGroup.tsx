@@ -11,7 +11,7 @@ import {
 } from "@patternfly/react-core";
 import { UserCircleIcon } from "@patternfly/react-icons";
 
-import { useKeycloak } from "@react-keycloak/web";
+import { useKeycloak } from "@react-keycloak-fork/web";
 
 import imgAvatar from "images/avatar.svg";
 

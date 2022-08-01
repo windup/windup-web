@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { useKeycloak } from "@react-keycloak/web";
+import { useKeycloak } from "@react-keycloak-fork/web";
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 
 import { useDispatch } from "react-redux";
