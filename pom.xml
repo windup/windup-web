@@ -24,8 +24,8 @@
         <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
         <version.forge>3.10.0.Final</version.forge>
         <version.furnace>2.29.1.Final</version.furnace>
-        <version.windup>6.0.0.Alpha1</version.windup>
-        <version.windup.cli>6.0.0.Alpha1</version.windup.cli>
+        <version.windup>6.0.0-SNAPSHOT</version.windup>
+        <version.windup.cli>6.0.0-SNAPSHOT</version.windup.cli>
         <version.keycloak>15.1.1</version.keycloak>
         <version.wildfly>23.0.2.Final</version.wildfly>
         <version.resteasy>3.15.1.Final</version.resteasy>
