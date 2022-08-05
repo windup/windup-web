@@ -52,7 +52,7 @@
     "d3": "4.4.0",
     "d3-selection-multi": "1.0.0",
     "d3-transition": "1.0.3",
-    "datatables": "1.10.9",
+    "datatables": "1.10.12",
     "datatables-colreorder": "1.2.0",
     "drmonty-datatables-colvis": "1.1.2",
     "font-awesome": "^4.7.0",
