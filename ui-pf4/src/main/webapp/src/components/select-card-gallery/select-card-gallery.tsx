@@ -67,7 +67,7 @@ const options: TransformationPathOption[] = [
     iconSrc: mug,
   },
   {
-    label: "OpenJDK 11",
+    label: "OpenJDK",
     description: "Rules to support the migration to OpenJDK 11 from OpenJDK 8.",
     options: [
       {
