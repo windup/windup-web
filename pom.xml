@@ -396,5 +396,18 @@
                 <windup.distribution.name>tackle-cli</windup.distribution.name>
             </properties>
         </profile>
+        <profile>
+            <id>mtr</id>
+            <activation>
+                <property>
+                    <name>downstream</name>
+                    <value>mtr</value>
+                </property>
+            </activation>
+            <properties>
+                <product-name>mtr</product-name>
+                <windup.distribution.name>mtr-cli</windup.distribution.name>
+            </properties>
+        </profile>
     </profiles>
 </project>
