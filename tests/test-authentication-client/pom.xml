@@ -4,24 +4,19 @@
 
     <parent>
         <groupId>org.jboss.windup.web</groupId>
-        <artifactId>windup-web-parent</artifactId>
+        <artifactId>windup-web-tests-parent</artifactId>
         <version>6.0.1-SNAPSHOT</version>
     </parent>
 
-    <groupId>org.jboss.windup.web.addons</groupId>
-    <artifactId>windup-web-addons</artifactId>
-    <packaging>pom</packaging>
-
-    <name>Windup Web - Addons Parent</name>
-    <description>Migration Tools Web Interface</description>
-
-
-    <modules>
-        <module>web-support</module>
-        <module>messaging-executor</module>
-    </modules>
+    <artifactId>test-authentication-client</artifactId>
+    <name>Windup Web - Test Authentication Client</name>
+    <packaging>jar</packaging>
 
     <dependencies>
-
+        <dependency>
+            <groupId>org.keycloak</groupId>
+            <artifactId>keycloak-authz-client</artifactId>
+            <version>${version.keycloak}</version>
+        </dependency>
     </dependencies>
 </project>

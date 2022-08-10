@@ -103,7 +103,11 @@ export const SelectCard: React.FC<SelectCardProps> = ({
             {label}
           </Title>
           {isNew && (
-            <Title headingLevel="h4" size="md">
+            <Title
+              headingLevel="h4"
+              size="md"
+              style={Array.isArray(options) ? { paddingBottom: 5 } : {}}
+            >
               <b>
                 <i
                   style={{

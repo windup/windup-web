@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.windup.web</groupId>
         <artifactId>windup-web-parent</artifactId>
-        <version>5.3.1-SNAPSHOT</version>
+        <version>6.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>windup-web-executor</artifactId>
@@ -158,7 +158,7 @@
                         <inherited>false</inherited>
                         <configuration>
                             <overwrite>false</overwrite>
-                            <addonRepository>${project.build.directory}/classes/${windup.distribution.name}-${version.windup}/addons</addonRepository>
+                            <addonRepository>${project.build.directory}/classes/${windup.distribution.name}-${version.windup.cli}/addons</addonRepository>
                             <addonIds>
                                 <addonId>org.jboss.windup:windup-server-provider-spi,${version.windup}</addonId>
                                 <addonId>org.jboss.windup.web.addons:windup-web-support,${project.version}</addonId>
@@ -179,7 +179,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <move file="${project.build.directory}/classes/${windup.distribution.name}-${version.windup}" tofile="${project.build.directory}/classes" />
+                                <move file="${project.build.directory}/classes/${windup.distribution.name}-${version.windup.cli}" tofile="${project.build.directory}/classes" />
                             </target>
                         </configuration>
                     </execution>
