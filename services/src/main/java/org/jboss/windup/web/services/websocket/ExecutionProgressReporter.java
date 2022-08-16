@@ -120,7 +120,10 @@ public class ExecutionProgressReporter extends AbstractMDB implements Serializab
         LOG.fine("Execution id: " + executionId + " message received: " + message);
         Boolean isSSL = (Boolean) session.getUserProperties().get("isSSL");
         String serverHost = (String) session.getUserProperties().get("Host");
-        authenticate(isSSL, serverHost, session, message);
+
+        if (System.getProperty("keycloak.server.url") != null) {
+            authenticate(isSSL, serverHost, session, message);
+        }
 
         if (!sessions.containsKey(executionId))
         {

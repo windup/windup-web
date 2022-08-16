@@ -14,7 +14,7 @@ import { isExecutionActive } from "utils/modelUtils";
 export const useSubscribeToExecutionWs = (
   execution: WindupExecution | WindupExecution[]
 ) => {
-  const { keycloak } = useKeycloak();
+  const { keycloak, initialized: isKeycloakInitialized } = useKeycloak();
 
   const dispatch = useDispatch();
 
@@ -44,7 +44,8 @@ export const useSubscribeToExecutionWs = (
               websocket.send(
                 JSON.stringify({
                   authentication: {
-                    token: keycloak.token,
+                    // If SSO is disabled we still need to send a random message to start receiving data from the WebSocket
+                    token: isKeycloakInitialized ? keycloak.token : "ping",
                   },
                 })
               );
@@ -81,5 +82,5 @@ export const useSubscribeToExecutionWs = (
         dispatch(executionsWsActions.unsubscribe(e.id))
       );
     };
-  }, [execution, keycloak.token, dispatch]);
+  }, [execution, keycloak.token, isKeycloakInitialized, dispatch]);
 };

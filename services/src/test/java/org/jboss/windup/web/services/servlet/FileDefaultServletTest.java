@@ -13,7 +13,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.AbstractTest;
-import org.jboss.windup.web.tests.authentication.KeycloakAuthenticationHelper;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,11 +51,10 @@ public class FileDefaultServletTest extends AbstractTest
 
         HttpClient httpClient = HttpClients.createDefault();
         final String testFileUrl = baseURL.toURI().toString() + "static-report/" + tempFile.getFileName();
-        String token = KeycloakAuthenticationHelper.getAccessToken();
+
 
         HttpGet get = new HttpGet(testFileUrl);
         get.removeHeaders("Authorization");
-        get.addHeader("Authorization", "Bearer " + token);
         HttpResponse response = httpClient.execute(get);
 
         int exec = response.getStatusLine().getStatusCode();

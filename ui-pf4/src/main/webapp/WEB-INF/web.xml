@@ -76,10 +76,6 @@
         </auth-constraint>
     </security-constraint>
 
-    <login-config>
-        <auth-method>KEYCLOAK</auth-method>
-    </login-config>
-
     <security-role>
         <role-name>user</role-name>
     </security-role>
