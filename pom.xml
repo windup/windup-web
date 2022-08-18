@@ -415,8 +415,6 @@
                 <product-name>mtr</product-name>
                 <windup.distribution.name>mtr-cli</windup.distribution.name>
             </properties>
-            <dependencies>
-            </dependencies>
         </profile>
     </profiles>
 </project>
