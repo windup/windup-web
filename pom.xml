@@ -233,6 +233,13 @@
                 <artifactId>httpmime</artifactId>
                 <version>${version.httpcomponents}</version>
             </dependency>
+            <!-- Placeholder dependency for letting PNC manage the 'version' value properly -->
+            <dependency>
+                <groupId>org.jboss.windup</groupId>
+                <artifactId>windup-cli-parent</artifactId>
+                <version>${version.windup.cli}</version>
+                <type>pom</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
