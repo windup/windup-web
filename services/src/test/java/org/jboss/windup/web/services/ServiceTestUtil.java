@@ -12,28 +12,32 @@ import java.io.InputStream;
 /**
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
-public class ServiceTestUtil {
+public class ServiceTestUtil
+{
 
-    public static ResteasyClient getResteasyClient() {
+    public static ResteasyClient getResteasyClient()
+    {
         return new ResteasyClientBuilder()
-                .build();
+                    .build();
     }
 
-    public static void assertFileExists(String path) {
+    public static void assertFileExists(String path)
+    {
         File file = new File(path);
         Assert.assertTrue("File should exist", file.exists());
     }
 
-    public static void assertFileDoesNotExist(String path) {
+    public static void assertFileDoesNotExist(String path)
+    {
         File file = new File(path);
         Assert.assertFalse("File should not exist", file.exists());
     }
 
-    public static void assertFileContentsAreEqual(InputStream expected, InputStream actual) throws IOException {
+    public static void assertFileContentsAreEqual(InputStream expected, InputStream actual) throws IOException
+    {
         String expectedMd5 = DigestUtils.md5Hex(expected);
         String actualMd5 = DigestUtils.md5Hex(actual);
 
         Assert.assertEquals("File contents differ!", expectedMd5, actualMd5);
     }
-
 }
