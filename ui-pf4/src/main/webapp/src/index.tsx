@@ -11,7 +11,7 @@ import { initApi, initInterceptors } from "./api/apiInit";
 import { AppPlaceholder } from "components";
 
 import { isSSOEnabled } from "Constants";
-import { ReactKeycloakProvider } from "@react-keycloak-fork/web";
+import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 
 initApi();
