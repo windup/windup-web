@@ -14,31 +14,29 @@ You need:
 You need to have WINDUP Web Console running. You can download it from [Red Hat Developers](https://developers.redhat.com/products/mta/download) or build it yourself from the source code following the instructions [building-the-windup-project](https://github.com/windup/windup-web#building-the-windup-project)
 
 - Run the `$WINDUP_HOME/run_windup.sh` and wait until the server starts. Verify the server is running opening http://localhost:8080 in your browser.
-- Configure Keycloak's client to have http://localhost:3000 as a valid redirect URI, folow the steps below to do it.
-
-Login to Keycloak:
-
-```shell
-$WINDUP_HOME/bin/kcadm.sh config credentials \
---server http://localhost:8080/auth \
---realm master \
---user admin \
---password password \
---client admin-cli
-```
-
-Change Keycloak's client `windup-web`:
-
-```shell
-$WINDUP_HOME/bin/kcadm.sh update realms/windup/clients/739a78cd-ab8d-427a-93f7-4af38f0eab31 \
--s id="739a78cd-ab8d-427a-93f7-4af38f0eab31" \
--s clientId="windup-web" \
--s adminUrl="/windup-web" \
--s "redirectUris=[\"http://localhost:3000/*\", \"/windup-web/*\", \"/windup-ui/*\"]" \
--s "webOrigins=[\"http://localhost:3000\", \"/\"]"
-```
 
 > `$WINDUP_HOME` represents the folder where WINDUP Web Console is running.
+
+## Prepare the UI
+
+This step is only required if you have enabled authentication in the backend.
+
+- Open the file `public/keycloak.json` and set manually the values of your Keycloak Server.
+- Open the file `public/index.html` and configure the `window["windupConstants"]` variable. Replace `SSO_ENABLED: "${ssoEnabled}"` by `SSO_ENABLED: "true"` so it looks like:
+
+```html
+<script>
+    window["mainApp"] = true;
+    window["windupConstants"] = {
+        SERVER: "${serverUrl}",
+        REST_SERVER: "${serverUrl}",
+        REST_BASE: "${apiServerUrl}",
+        GRAPH_REST_BASE: "${graphApiServerUrl}",
+        STATIC_REPORTS_BASE: "${staticReportServerUrl}",
+        SSO_ENABLED: "true",
+    };
+</script>
+```
 
 ## Run the UI in Dev mode
 

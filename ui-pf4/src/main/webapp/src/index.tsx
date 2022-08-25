@@ -20,7 +20,7 @@ export const ReactKeycloakProviderWrapper: React.FC = ({ children }) => {
   return isSSOEnabled() ? (
     <ReactKeycloakProvider
       authClient={keycloak}
-      initOptions={{ onLoad: "login-required" }}
+      initOptions={{ onLoad: "login-required", checkLoginIframe: false }}
       LoadingComponent={<AppPlaceholder />}
       isLoadingCheck={(keycloak) => {
         if (keycloak.authenticated) {
