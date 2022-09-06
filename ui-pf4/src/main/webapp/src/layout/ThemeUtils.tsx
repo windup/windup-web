@@ -58,9 +58,9 @@ const themeList: ThemeListType = {
     logoSrc: mtrLogo,
     logoNavbarSrc: mtrNavBrandImage,
     faviconSrc: mtrFavicon,
-    websiteURL: "https://developers.redhat.com/products/mta/overview/",
+    websiteURL: "https://developers.redhat.com/products/mtr/overview/",
     documentationURL:
-      "https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/",
+      "https://access.redhat.com/documentation/en-us/migration_toolkit_for_runtimes/",
   },
 };
 
