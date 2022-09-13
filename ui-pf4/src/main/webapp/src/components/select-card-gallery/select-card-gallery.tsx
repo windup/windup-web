@@ -98,7 +98,6 @@ const options: TransformationPathOption[] = [
       "A collection of rules to support migrating applications from Java EE 8 to Jakarta EE 9. The rules cover project dependencies, package renaming, updating XML Schema namespaces, the renaming of application configuration properties and bootstrapping files.",
     options: "jakarta-ee",
     iconSrc: migration,
-    isNew: true,
   },
   {
     label: "Spring Boot on Red Hat Runtimes",
@@ -113,14 +112,6 @@ const options: TransformationPathOption[] = [
       "A comprehensive set of rules for migrating traditional WebSphere applications to Open Liberty.",
     options: "openliberty",
     iconSrc: migration,
-    isNew: true,
-  },
-  {
-    label: "Camel",
-    description:
-      "Rules for the migration from Apache Camel 2 to Apache Camel 3.",
-    options: "camel",
-    iconSrc: multiply,
   },
   {
     label: "Azure",
@@ -140,6 +131,13 @@ const options: TransformationPathOption[] = [
     ],
     iconSrc: virtualServer,
     isNew: true,
+  },
+  {
+    label: "Camel",
+    description:
+      "Rules for the migration from Apache Camel 2 to Apache Camel 3.",
+    options: "camel",
+    iconSrc: multiply,
   },
 ];
 
