@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { AxiosError } from "axios";
 
 import {
@@ -38,6 +39,7 @@ import { useShowRuleLabelDetails } from "hooks/useShowRuleLabelDetails";
 import { useDispatch } from "react-redux";
 import { alertActions } from "store/alert";
 
+import { formatPath, Paths } from "Paths";
 import { getAlertModel } from "Constants";
 import {
   createProjectExecution,
@@ -52,8 +54,6 @@ import {
 } from "utils/modelUtils";
 
 import { AddRuleLabelButton } from "containers/add-rule-label-button";
-import { useHistory } from "react-router-dom";
-import { formatPath, Paths } from "Paths";
 
 const LABELPATH_FIELD = "labelPath";
 
@@ -126,6 +126,23 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
     setIsAnalysisContextBeingSaved,
   ] = useState(false);
 
+  const [isLabelPathChecked, setIsLabelPathChecked] = useState(
+    new Map<number, boolean>()
+  );
+
+  useEffect(() => {
+    if (analysisContext && labelsPath) {
+      const newCheckedValue = new Map<number, boolean>();
+      labelsPath.forEach((item) => {
+        newCheckedValue.set(
+          item.id,
+          !!analysisContext.labelsPaths.find((f) => f.id === item.id)
+        );
+      });
+      setIsLabelPathChecked(newCheckedValue);
+    }
+  }, [analysisContext, labelsPath]);
+
   // Analysis
 
   const onRunAnalysis = () => {
@@ -163,6 +180,9 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
         return;
       }
 
+      setIsLabelPathChecked(
+        new Map(isLabelPathChecked).set(labelPathToggled.id, isChecked)
+      );
       setIsAnalysisContextBeingSaved(true);
 
       getAnalysisContext(project.defaultAnalysisContextId)
@@ -200,7 +220,13 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
           setIsAnalysisContextBeingSaved(false);
         });
     },
-    [project, skipChangeToProvisional, loadProject, dispatch]
+    [
+      project,
+      isLabelPathChecked,
+      skipChangeToProvisional,
+      loadProject,
+      dispatch,
+    ]
   );
 
   const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
@@ -271,10 +297,10 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
             {
               title: (
                 <Switch
-                  aria-label="Enabled"
-                  isChecked={
-                    !!analysisContext?.labelsPaths.find((f) => f.id === item.id)
+                  aria-label={
+                    isLabelPathChecked.get(item.id) ? "Enabled" : "Disabled"
                   }
+                  isChecked={isLabelPathChecked.get(item.id)}
                   onChange={(isChecked) =>
                     handleLabelPathToggled(isChecked, item)
                   }
@@ -293,11 +319,11 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
       });
     },
     [
-      analysisContext,
       labelProviders,
+      isAnalysisContextBeingSaved,
       isFetchingProject,
       isFetchingLabels,
-      isAnalysisContextBeingSaved,
+      isLabelPathChecked,
       handleLabelPathToggled,
     ]
   );
