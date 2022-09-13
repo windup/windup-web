@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AxiosError } from "axios";
 
 import {
@@ -12,6 +12,7 @@ import {
   ToolbarItem,
   Switch,
   Bullseye,
+  Button,
 } from "@patternfly/react-core";
 import {
   ICell,
@@ -38,7 +39,11 @@ import { useDispatch } from "react-redux";
 import { alertActions } from "store/alert";
 
 import { getAlertModel } from "Constants";
-import { getAnalysisContext, saveAnalysisContext } from "api/api";
+import {
+  createProjectExecution,
+  getAnalysisContext,
+  saveAnalysisContext,
+} from "api/api";
 import { LabelsPath, LabelProviderEntity } from "models/api";
 import {
   getAxiosErrorMessage,
@@ -47,6 +52,8 @@ import {
 } from "utils/modelUtils";
 
 import { AddRuleLabelButton } from "containers/add-rule-label-button";
+import { useHistory } from "react-router-dom";
+import { formatPath, Paths } from "Paths";
 
 const LABELPATH_FIELD = "labelPath";
 
@@ -86,6 +93,8 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
   projectId,
   skipChangeToProvisional,
 }) => {
+  const history = useHistory();
+
   const dispatch = useDispatch();
   const deleteLabel = useDeleteLabel();
   const showRuleLabelDetails = useShowRuleLabelDetails();
@@ -111,11 +120,50 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
     loadLabels(projectId);
   }, [projectId, loadProject, loadLabels]);
 
+  // Switch checked state
+  const [
+    isAnalysisContextBeingSaved,
+    setIsAnalysisContextBeingSaved,
+  ] = useState(false);
+
+  // Analysis
+
+  const onRunAnalysis = () => {
+    if (!project || project.provisional) {
+      return;
+    }
+
+    setIsAnalysisContextBeingSaved(true);
+    getAnalysisContext(project.defaultAnalysisContextId)
+      .then(({ data }) => {
+        return createProjectExecution(projectId, data);
+      })
+      .then(() => {
+        history.push(
+          formatPath(Paths.executions, {
+            project: projectId,
+          })
+        );
+      })
+      .catch((error: AxiosError) => {
+        setIsAnalysisContextBeingSaved(false);
+        dispatch(
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
+        );
+      });
+  };
+
+  //
+
   const handleLabelPathToggled = useCallback(
     (isChecked: boolean, labelPathToggled: LabelsPath) => {
       if (!project) {
         return;
       }
+
+      setIsAnalysisContextBeingSaved(true);
 
       getAnalysisContext(project.defaultAnalysisContextId)
         .then(({ data }) => {
@@ -147,6 +195,9 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
               getAlertModel("danger", "Error", getAxiosErrorMessage(error))
             )
           );
+        })
+        .finally(() => {
+          setIsAnalysisContextBeingSaved(false);
         });
     },
     [project, skipChangeToProvisional, loadProject, dispatch]
@@ -182,7 +233,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
   };
 
   const areActionsDisabled = (): boolean => {
-    return false;
+    return isFetchingProject || isFetchingLabels || isAnalysisContextBeingSaved;
   };
 
   const getRowLabelPathField = (rowData: IRowData): LabelsPath => {
@@ -227,7 +278,13 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
                   onChange={(isChecked) =>
                     handleLabelPathToggled(isChecked, item)
                   }
-                  isDisabled={errors.length > 0 || numberOfLabels === 0}
+                  isDisabled={
+                    isFetchingProject ||
+                    isFetchingLabels ||
+                    isAnalysisContextBeingSaved ||
+                    errors.length > 0 ||
+                    numberOfLabels === 0
+                  }
                 />
               ),
             },
@@ -235,7 +292,14 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
         };
       });
     },
-    [analysisContext, labelProviders, handleLabelPathToggled]
+    [
+      analysisContext,
+      labelProviders,
+      isFetchingProject,
+      isFetchingLabels,
+      isAnalysisContextBeingSaved,
+      handleLabelPathToggled,
+    ]
   );
 
   const handleOnLabelLabelClose = () => {
@@ -275,9 +339,21 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
                     type="Label"
                     projectId={projectId}
                     uploadToGlobal={false}
+                    isDisabled={areActionsDisabled()}
                     onModalClose={handleOnLabelLabelClose}
                   />
                 </ToolbarItem>
+                {project && !project.provisional && (
+                  <ToolbarItem>
+                    <Button
+                      variant="secondary"
+                      onClick={onRunAnalysis}
+                      isDisabled={areActionsDisabled()}
+                    >
+                      Run analysis
+                    </Button>
+                  </ToolbarItem>
+                )}
               </ToolbarGroup>
             }
             emptyState={
