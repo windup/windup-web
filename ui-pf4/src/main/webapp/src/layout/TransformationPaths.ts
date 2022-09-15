@@ -143,3 +143,23 @@ export const DEFAULT_TRANSFORMATION_PATHS = [
   AZURE,
   CAMEL,
 ];
+
+export const MTA_MTR_TRANSFORMATION_PATHS = [
+  EAP7,
+  CONTAINERIZATION,
+  QUARKUS,
+  ORACLE_TO_OPENJDK,
+  OPENJDK,
+  LINUX,
+  JAKARTA9,
+  RH_RUNTIMES,
+  OPEN_LIBERTY,
+  {
+    label: "Azure",
+    description:
+      "Upgrade your Java application so that it can be deployed on Azure App Service.",
+    options: "azure-appservice",
+    iconSrc: virtualServer,
+  },
+  CAMEL,
+];

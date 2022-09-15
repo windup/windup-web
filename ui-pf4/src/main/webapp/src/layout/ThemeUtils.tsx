@@ -13,41 +13,11 @@ import mtaFavicon from "images/mta-favicon.png";
 import tackleFavicon from "images/tackle-favicon.png";
 import mtrFavicon from "images/mtr-favicon.png";
 
-import virtualServer from "images/Icon-Red_Hat-Virtual_server_stack-A-Red-RGB.png";
 import {
-  CAMEL,
-  CONTAINERIZATION,
   DEFAULT_TRANSFORMATION_PATHS,
-  EAP7,
-  JAKARTA9,
-  LINUX,
-  OPENJDK,
-  OPEN_LIBERTY,
-  ORACLE_TO_OPENJDK,
-  QUARKUS,
-  RH_RUNTIMES,
+  MTA_MTR_TRANSFORMATION_PATHS,
   TransformationPathOption,
 } from "./TransformationPaths";
-
-const MTA_MTR_TRANSFORMATION_PATHS = [
-  EAP7,
-  CONTAINERIZATION,
-  QUARKUS,
-  ORACLE_TO_OPENJDK,
-  OPENJDK,
-  LINUX,
-  JAKARTA9,
-  RH_RUNTIMES,
-  OPEN_LIBERTY,
-  {
-    label: "Azure",
-    description:
-      "Upgrade your Java application so that it can be deployed on Azure App Service.",
-    options: "azure-appservice",
-    iconSrc: virtualServer,
-  },
-  CAMEL,
-];
 
 //
 
