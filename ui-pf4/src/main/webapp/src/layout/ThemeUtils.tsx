@@ -29,6 +29,26 @@ import {
   TransformationPathOption,
 } from "./TransformationPaths";
 
+const MTA_MTR_TRANSFORMATION_PATHS = [
+  EAP7,
+  CONTAINERIZATION,
+  QUARKUS,
+  ORACLE_TO_OPENJDK,
+  OPENJDK,
+  LINUX,
+  JAKARTA9,
+  RH_RUNTIMES,
+  OPEN_LIBERTY,
+  {
+    label: "Azure",
+    description:
+      "Upgrade your Java application so that it can be deployed on Azure App Service.",
+    options: "azure-appservice",
+    iconSrc: virtualServer,
+  },
+  CAMEL,
+];
+
 //
 
 export const PFTheme: "light" | "dark" = "dark";
@@ -64,25 +84,7 @@ const themeList: ThemeListType = {
     websiteURL: "https://developers.redhat.com/products/mta/overview/",
     documentationURL:
       "https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/",
-    transformationPaths: [
-      EAP7,
-      CONTAINERIZATION,
-      QUARKUS,
-      ORACLE_TO_OPENJDK,
-      OPENJDK,
-      LINUX,
-      JAKARTA9,
-      RH_RUNTIMES,
-      OPEN_LIBERTY,
-      {
-        label: "Azure",
-        description:
-          "Upgrade your Java application so that it can be deployed on Azure App Service.",
-        options: "azure-appservice",
-        iconSrc: virtualServer,
-      },
-      CAMEL,
-    ],
+    transformationPaths: [...MTA_MTR_TRANSFORMATION_PATHS],
   },
   tackle: {
     name: "Tackle Analysis",
@@ -101,25 +103,7 @@ const themeList: ThemeListType = {
     websiteURL: "https://developers.redhat.com/products/mtr/overview/",
     documentationURL:
       "https://access.redhat.com/documentation/en-us/migration_toolkit_for_runtimes/",
-    transformationPaths: [
-      EAP7,
-      CONTAINERIZATION,
-      QUARKUS,
-      ORACLE_TO_OPENJDK,
-      OPENJDK,
-      LINUX,
-      JAKARTA9,
-      RH_RUNTIMES,
-      OPEN_LIBERTY,
-      {
-        label: "Azure",
-        description:
-          "Upgrade your Java application so that it can be deployed on Azure App Service.",
-        options: "azure-appservice",
-        iconSrc: virtualServer,
-      },
-      CAMEL,
-    ],
+    transformationPaths: [...MTA_MTR_TRANSFORMATION_PATHS],
   },
 };
 
