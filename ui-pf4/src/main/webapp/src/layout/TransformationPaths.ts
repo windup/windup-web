@@ -1,0 +1,145 @@
+import appOnServer from "images/Icon-Red_Hat-App_on_server-A-Red-RGB.svg";
+import cloud from "images/Icon-Red_Hat-Cloud-A-Red-RGB.svg";
+import migration from "images/Icon-Red_Hat-Migration-A-Red-RGB.svg";
+import mug from "images/Icon-Red_Hat-Mug-A-Red-RGB.svg";
+import multiply from "images/Icon-Red_Hat-Multiply-A-Red-RGB.svg";
+import server from "images/Icon-Red_Hat-Server-A-Red-RGB.svg";
+import virtualServer from "images/Icon-Red_Hat-Virtual_server_stack-A-Red-RGB.png";
+
+export interface MultipleOptions {
+  label: string;
+  value: string;
+  default: boolean;
+}
+
+export interface TransformationPathOption {
+  label: string;
+  description?: string;
+  options: string | MultipleOptions[];
+  icon?: React.ComponentType<any>;
+  iconSrc?: string;
+  isNew?: boolean;
+}
+
+export const EAP7: TransformationPathOption = {
+  label: "Application server migration to EAP 7",
+  description:
+    "Upgrade to the latest Release of JBoss EAP or migrate your applications to JBoss EAP from competitors' Enterprise Application server (e.g.Oracle Weblogic Server).",
+  options: "eap7",
+  iconSrc: appOnServer,
+};
+
+export const CONTAINERIZATION: TransformationPathOption = {
+  label: "Containerization",
+  description:
+    "A comprehensive set of cloud and container readiness rules to assess applications for suitability for deployment on OpenShift Container Platform.",
+  options: "cloud-readiness",
+  iconSrc: cloud,
+};
+
+export const QUARKUS: TransformationPathOption = {
+  label: "Quarkus",
+  description:
+    "Rules to support the migration of Spring Boot applications to Quarkus. The rules also identify other, non-Spring Boot,  technologies embedded within applications for which there are equivalent Quarkus extensions.",
+  options: "quarkus",
+  iconSrc: migration,
+};
+
+export const ORACLE_TO_OPENJDK: TransformationPathOption = {
+  label: "OracleJDK to OpenJDK",
+  description: "Rules to support the migration to OpenJDK from OracleJDK.",
+  options: "openjdk",
+  iconSrc: mug,
+};
+
+export const OPENJDK: TransformationPathOption = {
+  label: "OpenJDK",
+  description:
+    "Rules to support upgrading the version of OpenJDK. Migrate to OpenJDK 11 or OpenJDK 17.",
+  options: [
+    {
+      label: "OpenJDK 11",
+      value: "openjdk11",
+      default: false,
+    },
+    {
+      label: "OpenJDK 17",
+      value: "openjdk17",
+      default: true,
+    },
+  ],
+  iconSrc: mug,
+  isNew: true,
+};
+
+export const LINUX: TransformationPathOption = {
+  label: "Linux",
+  description:
+    "Ensure that there are no Microsoft Windows paths hard coded and no Dynamic-Link Library (DLL) into your applications.",
+  options: "linux",
+  iconSrc: server,
+};
+
+export const JAKARTA9: TransformationPathOption = {
+  label: "Jakarta EE 9",
+  description:
+    "A collection of rules to support migrating applications from Java EE 8 to Jakarta EE 9. The rules cover project dependencies, package renaming, updating XML Schema namespaces, the renaming of application configuration properties and bootstrapping files.",
+  options: "jakarta-ee",
+  iconSrc: migration,
+};
+export const RH_RUNTIMES: TransformationPathOption = {
+  label: "Spring Boot on Red Hat Runtimes",
+  description:
+    "A set of rules for assessing the compatibility of applications against versions of Spring Boot libraries suported by Red Hat Runtimes.",
+  options: "rhr",
+  iconSrc: migration,
+};
+
+export const OPEN_LIBERTY: TransformationPathOption = {
+  label: "Open Liberty",
+  description:
+    "A comprehensive set of rules for migrating traditional WebSphere applications to Open Liberty.",
+  options: "openliberty",
+  iconSrc: migration,
+};
+
+export const AZURE: TransformationPathOption = {
+  label: "Azure",
+  description:
+    "Upgrade your Java application so it can be deployed in different flavors of Azure.",
+  options: [
+    {
+      label: "azure-appservice",
+      value: "azure-appservice",
+      default: true,
+    },
+    {
+      label: "azure-aks",
+      value: "azure-aks",
+      default: false,
+    },
+  ],
+  iconSrc: virtualServer,
+  isNew: true,
+};
+
+export const CAMEL: TransformationPathOption = {
+  label: "Camel",
+  description: "Rules for the migration from Apache Camel 2 to Apache Camel 3.",
+  options: "camel",
+  iconSrc: multiply,
+};
+
+export const DEFAULT_TRANSFORMATION_PATHS = [
+  EAP7,
+  CONTAINERIZATION,
+  QUARKUS,
+  ORACLE_TO_OPENJDK,
+  OPENJDK,
+  LINUX,
+  JAKARTA9,
+  RH_RUNTIMES,
+  OPEN_LIBERTY,
+  AZURE,
+  CAMEL,
+];
