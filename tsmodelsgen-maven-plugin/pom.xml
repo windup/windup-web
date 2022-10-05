@@ -61,7 +61,7 @@
             </dependency>
             <dependency>
                 <groupId>org.jboss.windup.rules</groupId>
-                <artifactId>windup-rulesets</artifactId>
+                <artifactId>windup-rulesets-parent</artifactId>
                 <version>${version.windup.ruleset}</version>
             </dependency>
         </dependencies>
@@ -116,10 +116,12 @@
             <version>${version.windup.core}</version>
         </dependency>
         <!-- But it isn't. The needed rest is referenced as deps in bootstrap. -->
+        <!-- moved down into profiles to add the one with the proper theme
         <dependency>
             <groupId>org.jboss.windup</groupId>
             <artifactId>windup-bootstrap</artifactId>
         </dependency>
+        -->
 
         <!-- Temporary trick to get around addon dependencies issues -->
         <dependency>
@@ -279,6 +281,65 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>windup</id>
+            <activation>
+                <property>
+                    <name>!downstream</name>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.windup</groupId>
+                    <artifactId>windup-bootstrap-windup</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>mta</id>
+            <activation>
+                <property>
+                    <name>downstream</name>
+                    <value>mta</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.windup</groupId>
+                    <artifactId>windup-bootstrap-mta</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>tackle</id>
+            <activation>
+                <property>
+                    <name>downstream</name>
+                    <value>tackle</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.windup</groupId>
+                    <artifactId>windup-bootstrap-tackle</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>mtr</id>
+            <activation>
+                <property>
+                    <name>downstream</name>
+                    <value>mtr</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.jboss.windup</groupId>
+                    <artifactId>windup-bootstrap-mtr</artifactId>
+                </dependency>
+            </dependencies>
         </profile>
     </profiles>
 </project>
