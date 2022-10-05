@@ -27,7 +27,7 @@
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>secured</web-resource-name>
-            <url-pattern>/*</url-pattern>
+            <url-pattern>${windup.secured.url}</url-pattern>
         </web-resource-collection>
         <auth-constraint>
             <role-name>user</role-name>
@@ -60,10 +60,6 @@
             <url-pattern>/ArquillianServletRunner/*</url-pattern>
         </web-resource-collection>
     </security-constraint>
-
-    <login-config>
-        <auth-method>KEYCLOAK</auth-method>
-    </login-config>
 
     <security-role>
         <role-name>user</role-name>

@@ -21,6 +21,7 @@ interface SetCustomRulesProps extends RouteComponentProps<ProjectRoute> {}
 export const SetCustomRules: React.FC<SetCustomRulesProps> = ({
   match,
   history,
+  location,
 }) => {
   const cancelWizard = useCancelWizard();
 
@@ -37,27 +38,30 @@ export const SetCustomRules: React.FC<SetCustomRulesProps> = ({
   }, [match, loadProject]);
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    history.push(
-      formatPath(getPathFromStep(newStep), {
+    history.push({
+      pathname: formatPath(getPathFromStep(newStep), {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnBack = () => {
-    history.push(
-      formatPath(Paths.newProject_selectPackages, {
+    history.push({
+      pathname: formatPath(Paths.newProject_selectPackages, {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnNext = () => {
-    history.push(
-      formatPath(Paths.newProject_customLabels, {
+    history.push({
+      pathname: formatPath(Paths.newProject_customLabels, {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnCancel = () => cancelWizard(history.push);

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import "./index.scss";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
@@ -10,16 +10,17 @@ import { initApi, initInterceptors } from "./api/apiInit";
 
 import { AppPlaceholder } from "components";
 
-import { KeycloakProvider } from "@react-keycloak/web";
+import { isSSOEnabled } from "Constants";
+import { ReactKeycloakProvider } from "@react-keycloak/web";
 import keycloak from "./keycloak";
 
 initApi();
 
-ReactDOM.render(
-  <React.StrictMode>
-    <KeycloakProvider
-      keycloak={keycloak}
-      initConfig={{ onLoad: "login-required" }}
+export const ReactKeycloakProviderWrapper: React.FC = ({ children }) => {
+  return isSSOEnabled() ? (
+    <ReactKeycloakProvider
+      authClient={keycloak}
+      initOptions={{ onLoad: "login-required", checkLoginIframe: false }}
       LoadingComponent={<AppPlaceholder />}
       isLoadingCheck={(keycloak) => {
         if (keycloak.authenticated) {
@@ -28,7 +29,7 @@ ReactDOM.render(
               if (keycloak.token) {
                 keycloak
                   .updateToken(5)
-                  .then(() => resolve(keycloak.token))
+                  .then(() => resolve(keycloak.token!))
                   .catch(() => reject("Failed to refresh token"));
               } else {
                 keycloak.login();
@@ -41,10 +42,24 @@ ReactDOM.render(
         return !keycloak.authenticated;
       }}
     >
+      {children}
+    </ReactKeycloakProvider>
+  ) : (
+    <ReactKeycloakProvider
+      authClient={keycloak}
+      initOptions={{ onLoad: "login-required" }}
+    >
+      {children}
+    </ReactKeycloakProvider>
+  );
+};
+ReactDOM.render(
+  <React.StrictMode>
+    <ReactKeycloakProviderWrapper>
       <Provider store={configureStore()}>
         <App />
       </Provider>
-    </KeycloakProvider>
+    </ReactKeycloakProviderWrapper>
   </React.StrictMode>,
   document.getElementById("root")
 );

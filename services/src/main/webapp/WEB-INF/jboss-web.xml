@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jboss-web>
-    <context-root>mta-ui/api</context-root>
+    <context-root>windup-ui/api</context-root>
 </jboss-web>

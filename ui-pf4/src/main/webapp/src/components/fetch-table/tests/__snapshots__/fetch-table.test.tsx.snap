@@ -5,7 +5,9 @@ exports[`FetchTable Renders without crashing 1`] = `
   <Table
     aria-label="Table"
     borders={true}
+    canCollapseAll={true}
     canSelectAll={true}
+    canSortFavorites={true}
     cells={
       Array [
         Object {
@@ -23,12 +25,16 @@ exports[`FetchTable Renders without crashing 1`] = `
       ]
     }
     className=""
+    collapseAllAriaLabel=""
     contentId="expanded-content"
     dropdownDirection="down"
     dropdownPosition="right"
     expandId="expandable-toggle"
     gridBreakPoint="grid-md"
+    isHeaderSelectDisabled={false}
+    isNested={false}
     isStickyHeader={false}
+    isTreeTable={false}
     onSort={[Function]}
     ouiaSafe={true}
     role="grid"
@@ -38,7 +44,7 @@ exports[`FetchTable Renders without crashing 1`] = `
     variant={null}
   >
     <TableHeader />
-    <Component />
+    <TableBody />
   </Table>
 </Fragment>
 `;

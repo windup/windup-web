@@ -1,5 +1,6 @@
 package org.jboss.windup.web.services.rest;
 
+import org.jboss.windup.web.services.SourceTargetTechnologies;
 import org.jboss.windup.web.services.model.AnalysisContext;
 
 import javax.validation.Valid;
@@ -26,6 +27,10 @@ public interface AnalysisContextEndpoint
     @Path("{id}")
     AnalysisContext get(@PathParam("id") Long id);
 
+    @GET
+    @Path("{id}/custom-technologies")
+    SourceTargetTechnologies getCustomTechnologies(@PathParam("id") Long id);
+
     /**
      * Saves default analysis context for project
      *
@@ -41,6 +46,7 @@ public interface AnalysisContextEndpoint
     AnalysisContext saveAsProjectDefault(
             @Valid AnalysisContext analysisContext,
             @PathParam("projectId") Long projectId,
-            @QueryParam("skipChangeToProvisional") @DefaultValue("false") boolean skipChangeToProvisional
+            @QueryParam("skipChangeToProvisional") @DefaultValue("false") boolean skipChangeToProvisional,
+            @QueryParam("synchronizeTechnologiesWithCustomRules") @DefaultValue("false") boolean synchronizeTechnologiesWithCustomRules
     );
 }

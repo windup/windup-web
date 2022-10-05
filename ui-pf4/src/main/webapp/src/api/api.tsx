@@ -18,6 +18,7 @@ import {
   ValidationResult,
   WindupExecution,
   WindupVersion,
+  SourceTargetTechnologies,
 } from "models/api";
 
 export const WINDUP_CORE_VERSION_URL = "/windup/coreVersion";
@@ -171,11 +172,20 @@ export const getAnalysisContext = (
 export const saveAnalysisContext = (
   projectId: number | string,
   analysisContext: AnalysisContext,
-  skipChangeToProvisional: boolean
+  skipChangeToProvisional: boolean,
+  synchronizeTechnologiesWithCustomRules: boolean = false
 ): AxiosPromise<AnalysisContext> => {
   return ApiClient.put<AnalysisContext>(
-    `analysis-context/migrationProjects/${projectId}?skipChangeToProvisional=${skipChangeToProvisional}`,
+    `analysis-context/migrationProjects/${projectId}?skipChangeToProvisional=${skipChangeToProvisional}&synchronizeTechnologiesWithCustomRules=${synchronizeTechnologiesWithCustomRules}`,
     analysisContext
+  );
+};
+
+export const getAnalysisContextCustomTechnologies = (
+  analysisContextId: number | string
+): AxiosPromise<SourceTargetTechnologies> => {
+  return ApiClient.get<SourceTargetTechnologies>(
+    `analysis-context/${analysisContextId}/custom-technologies`
   );
 };
 
@@ -267,10 +277,13 @@ export const getAdvancedConfigurationOptions = (): AxiosPromise<
 };
 
 export const validateAdvancedOptionValue = (
-  value: AdvancedOption
+  value: AdvancedOption,
+  analysisContext?: AnalysisContext
 ): AxiosPromise<ValidationResult> => {
   return ApiClient.post<ValidationResult>(
-    "configuration-options/validate-option",
+    `configuration-options/validate-option${
+      analysisContext ? "?analysisContextId=" + analysisContext.id : ""
+    }`,
     value
   );
 };

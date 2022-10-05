@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.jboss.windup.web</groupId>
         <artifactId>windup-web-tests-parent</artifactId>
-        <version>5.1.1-SNAPSHOT</version>
+        <version>6.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>windup-web-tests-wildfly-dist</artifactId>
@@ -39,14 +39,6 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.keycloak</groupId>
-                                    <artifactId>keycloak-server-overlay</artifactId>
-                                    <version>${version.keycloak}</version>
-                                    <type>zip</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${wildfly.outputdirectory}</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.keycloak</groupId>
                                     <artifactId>keycloak-wildfly-adapter-dist</artifactId>
                                     <version>${version.keycloak}</version>
                                     <type>zip</type>
@@ -74,23 +66,6 @@
                             <resources>
                                 <resource>
                                     <directory>src/main/resources/keycloak_config</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-keycloak-db</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${wildfly.outputdirectory}standalone/data/</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/resources/keycloak_database</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>

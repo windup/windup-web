@@ -51,6 +51,7 @@ interface CreateProjectProps
 export const CreateProject: React.FC<CreateProjectProps> = ({
   match,
   history,
+  location,
 }) => {
   const dispatch = useDispatch();
   const cancelWizard = useCancelWizard();
@@ -91,11 +92,12 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
     promise
       .then(({ data }) => {
         formikHelpers.setSubmitting(false);
-        history.push(
-          formatPath(Paths.newProject_addApplications, {
+        history.push({
+          pathname: formatPath(Paths.newProject_addApplications, {
             project: data.id,
-          })
-        );
+          }),
+          search: location.search,
+        });
       })
       .catch((error: AxiosError) => {
         formikHelpers.setSubmitting(false);
@@ -116,11 +118,12 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
   });
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    history.push(
-      formatPath(getPathFromStep(newStep), {
+    history.push({
+      pathname: formatPath(getPathFromStep(newStep), {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnNext = () => {

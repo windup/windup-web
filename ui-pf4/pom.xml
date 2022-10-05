@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.windup.web</groupId>
         <artifactId>windup-web-parent</artifactId>
-        <version>5.1.1-SNAPSHOT</version>
+        <version>6.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>windup-web-ui-pf4</artifactId>
@@ -13,14 +13,17 @@
     <packaging>war</packaging>
 
     <properties>
+        <node.version>v16.14.0</node.version>
+        <yarn.version>v1.22.17</yarn.version>
         <webpack.environment>development</webpack.environment>
+        <npmArgs/>
     </properties>
 
     <dependencies>
         <!-- Java EE -->
         <dependency>
             <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-javaee-7.0</artifactId>
+            <artifactId>jboss-jakartaee-8.0</artifactId>
             <version>${version.jboss.javaee}</version>
             <type>pom</type>
             <scope>provided</scope>
@@ -63,8 +66,27 @@
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-warp</artifactId>
+            <version>1.0.0</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
             <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>2.17.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.17.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
@@ -102,13 +124,16 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <version>4.5.6</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>mta-ui</finalName>
+        <finalName>windup-ui</finalName>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
@@ -183,58 +208,69 @@
             </plugin>
 
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.12.1</version>
+                <configuration>
+                    <workingDirectory>${project.basedir}/src/main/webapp</workingDirectory>
+                    <installDirectory>${project.build.directory}</installDirectory>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>npm-install</id>
-                        <phase>compile</phase>
+                        <id>install node and yarn</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>install-node-and-yarn</goal>
                         </goals>
-
                         <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                            <arguments>
-                                <argument>install</argument>
-                            </arguments>
+                            <nodeVersion>${node.version}</nodeVersion>
+                            <yarnVersion>${yarn.version}</yarnVersion>
                         </configuration>
                     </execution>
-
                     <execution>
-                        <id>webpack-build</id>
-                        <phase>compile</phase>
+                        <id>yarn config strict-ssl</id>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>yarn</goal>
                         </goals>
-
                         <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
+                            <arguments>config set strict-ssl false -g</arguments>
+                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn install</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Adding network-timeout for Windows OS where fetching NPM dependencies takes more than usual -->
+                            <arguments>install --network-timeout 600000 ${npmArgs}</arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn run build</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>build ${npmArgs} --profile</arguments>
+                            <environmentVariables>
+                                <NODE_ENV>production</NODE_ENV>
+                                <REACT_APP_THEME>${product-name}</REACT_APP_THEME>
+                            </environmentVariables>
+                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>yarn run build:freemarker</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
                             <environmentVariables>
                                 <NODE_ENV>production</NODE_ENV>
                             </environmentVariables>
-                            <arguments>
-                                <argument>build</argument>
-                                <argument>--profile</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-
-                    <execution>
-                        <id>webpack-build-freemarker</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-
-                        <configuration>
-                            <executable>yarn</executable>
-                            <workingDirectory>src/main/webapp</workingDirectory>
-                            <arguments>
-                                <argument>build:freemarker</argument>
-                            </arguments>
+                            <arguments>build:freemarker</arguments>
+                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
                         </configuration>
                     </execution>
                 </executions>

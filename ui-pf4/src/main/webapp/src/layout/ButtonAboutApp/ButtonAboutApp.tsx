@@ -25,8 +25,8 @@ import "./ButtonAboutApp.scss";
 import { WINDUP_WEB_VERSION, WINDUP_WEB_SCM_REVISION } from "Constants";
 import { getWindupVersion } from "api/api";
 
-import brandImage from "images/red-hat-horizontal-reverse.svg";
 import { WindupVersion } from "models/api";
+import { Theme } from "layout/ThemeUtils";
 
 export const ButtonAboutApp: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,20 +58,20 @@ export const ButtonAboutApp: React.FC = () => {
       <AboutModal
         isOpen={isOpen}
         onClose={toggleButton}
-        brandImageAlt="Red Hat"
-        brandImageSrc={brandImage}
-        productName="Migration Toolkit for Applications"
+        brandImageAlt="Brand Image"
+        brandImageSrc={Theme.logoSrc}
+        productName={Theme.name}
         className="about-app__component"
       >
-        <TextContent className="pf-u-py-xl">
+        <TextContent>
           <h4>About</h4>
           <p>
             <a
-              href="https://developers.redhat.com/products/mta/overview/"
+              href={Theme.websiteURL}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Migration Toolkit for Applications
+              {Theme.name}
             </a>{" "}
             allows application architects and developers to quickly decompile,
             analyze, assess and modernize large scale application portfolios and
@@ -81,9 +81,7 @@ export const ButtonAboutApp: React.FC = () => {
         <TextContent className="pf-u-py-xl">
           <Grid hasGutter>
             <GridItem lg={7}>
-              <span className="dt">
-                Migration Toolkit for Applications Core
-              </span>
+              <span className="dt">{Theme.name} Core</span>
             </GridItem>
             <GridItem lg={5}>
               {windupVersion.version}
@@ -102,9 +100,7 @@ export const ButtonAboutApp: React.FC = () => {
               )}
             </GridItem>
             <GridItem lg={7}>
-              <span className="dt">
-                Migration Toolkit for Applications Web Console
-              </span>
+              <span className="dt">{Theme.name} Web Console</span>
             </GridItem>
             <GridItem lg={5}>
               {WINDUP_WEB_VERSION}
@@ -129,7 +125,7 @@ export const ButtonAboutApp: React.FC = () => {
           <List>
             <ListItem>
               <a
-                href="https://developers.redhat.com/products/mta/overview/"
+                href={Theme.websiteURL}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -138,7 +134,7 @@ export const ButtonAboutApp: React.FC = () => {
             </ListItem>
             <ListItem>
               <a
-                href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+                href={Theme.documentationURL}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -147,7 +143,35 @@ export const ButtonAboutApp: React.FC = () => {
             </ListItem>
           </List>
         </TextContent>
-        <div className="pf-c-about-modal-box__strapline">
+        <TextContent className="pf-u-py-xl">
+          <p>
+            The Icon Library used in this project is a derivative of the{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.redhat.com/en/about/brand/standards/icons/standard-icons"
+            >
+              Standard Icons library
+            </a>{" "}
+            by{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.redhat.com/"
+            >
+              Red Hat
+            </a>
+            , used under{" "}
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://creativecommons.org/licenses/by/4.0/"
+            >
+              CC BY 4.0
+            </a>
+          </p>
+        </TextContent>
+        <div>
           <Flex>
             <FlexItem>
               <a

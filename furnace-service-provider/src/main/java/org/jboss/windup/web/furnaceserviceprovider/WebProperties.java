@@ -1,11 +1,13 @@
 package org.jboss.windup.web.furnaceserviceprovider;
 
+import org.jboss.forge.furnace.util.OperatingSystemUtils;
 import org.jboss.vfs.VFS;
 import org.jboss.vfs.VirtualFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -93,7 +95,7 @@ public class WebProperties
 
         if (addonRepository == null)
         {
-            addonRepository = servletContextPath.resolve("WEB-INF").resolve("mta-cli").resolve("addons");
+            addonRepository = servletContextPath.resolve("WEB-INF").resolve("windup-cli").resolve("addons");
 
             if (!Files.isDirectory(addonRepository))
                 throw new IllegalStateException("Cannot load addon repository: " + addonRepository);
@@ -101,15 +103,15 @@ public class WebProperties
 
         if (rulesRepository == null)
         {
-            rulesRepository = servletContextPath.resolve("WEB-INF").resolve("mta-cli").resolve("rules");
+            rulesRepository = servletContextPath.resolve("WEB-INF").resolve("windup-cli").resolve("rules");
             if (!Files.isDirectory(rulesRepository))
                 throw new IllegalStateException("Cannot load rules repository: " + rulesRepository);
         }
         if (labelsRepository == null)
         {
             // TODO loading core labels from 'rules' directory because labels and rules are stored in the same folder
-//            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("mta-cli").resolve("labels");
-            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("mta-cli").resolve("rules");
+//            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("windup-cli").resolve("labels");
+            labelsRepository = servletContextPath.resolve("WEB-INF").resolve("windup-cli").resolve("rules");
             if (!Files.isDirectory(labelsRepository))
                 throw new IllegalStateException("Cannot load labels repository: " + labelsRepository);
         }
@@ -126,6 +128,15 @@ public class WebProperties
             String pathString;
             if (pathUrl.toString().startsWith("vfs:"))
             {
+                // Below there are examples of different values for "pathUrl" depending on the OS where the Web Console is running:
+                // In Linux: pathUrl=vfs:/content/api.war/WEB-INF/lib/furnace-service-provider-5.3.0.Final.jar
+                // In Windows pathUrl=vfs:/C:/Users/myUsername/Downloads/windup-web/temp 1/content/api.war/WEB-INF/lib/furnace-service-provider-5.3.0.Final.jar
+                // In Windows: due to the fact that "pathUrl" contains the full path, there is the possibility that
+                // "pathUrl" might contain blank spaces which will generate an exception on "pathUrl.toURI()".
+                if (OperatingSystemUtils.isWindows() && pathUrl.toString().contains(" ")) {
+                    pathUrl = new URL(pathUrl.toString().replace(" ", "%20"));
+                }
+
                 VirtualFile virtualFile = VFS.getChild(pathUrl.toURI());
                 pathString = virtualFile.getParent().getParent().getParent().getPhysicalFile().getCanonicalPath();
                 LOG.info("From VFS - Path String: " + pathString);

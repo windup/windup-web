@@ -5,38 +5,40 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>22</version>
+        <version>37</version>
         <relativePath />
     </parent>
 
     <groupId>org.jboss.windup.web</groupId>
     <artifactId>windup-web-parent</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>6.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Windup Web - Parent</name>
     <description>Migration Tools Web Interface</description>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
         <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
-        <version.forge>3.9.2.Final</version.forge>
-        <version.furnace>2.28.4.Final</version.furnace>
-        <version.windup>5.1.1-SNAPSHOT</version.windup>
-        <version.keycloak>8.0.1</version.keycloak>
-        <version.wildfly>18.0.1.Final</version.wildfly>
-        <version.resteasy>3.0.19.Final</version.resteasy>
-        <version.jboss.javaee>1.0.3.Final</version.jboss.javaee>
+        <version.forge>3.10.0.Final</version.forge>
+        <version.furnace>2.29.1.Final</version.furnace>
+        <version.windup>6.0.1-SNAPSHOT</version.windup>
+        <version.windup.cli>6.0.1-SNAPSHOT</version.windup.cli>
+        <version.keycloak>18.0.2</version.keycloak>
+        <version.wildfly>23.0.2.Final</version.wildfly>
+        <version.resteasy>3.15.1.Final</version.resteasy>
+        <version.jboss.javaee>1.0.1.Final</version.jboss.javaee>
 
         <windup.web.scm.connection>scm:git:https://github.com/windup/windup-web.git</windup.web.scm.connection>
         <windup.web.developer.connection>scm:git:git@github.com:windup/windup-web.git</windup.web.developer.connection>
         <windup.web.scm.url>http://github.com/windup/windup-web</windup.web.scm.url>
 
-        <windup.distribution.name>mta-cli</windup.distribution.name>
-        <version.hibernate>5.3.14.Final</version.hibernate>
-        <version.undertow>2.0.15.Final</version.undertow>
+        <windup.distribution.name>windup-cli</windup.distribution.name>
+        <version.hibernate>5.3.20.Final</version.hibernate>
+        <version.undertow>2.2.5.Final</version.undertow>
+        <version.httpcomponents>4.5.13</version.httpcomponents>
     </properties>
 
     <scm>
@@ -63,6 +65,7 @@
         </mailingList>
     </mailingLists>
 
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -83,7 +86,6 @@
         <module>tsmodelsgen-invocation</module>
         <module>tests</module>
         <module>services</module>
-        <module>ui</module>
         <module>ui-pf4</module>
         <module>ear</module>
     </modules>
@@ -99,7 +101,7 @@
             </dependency>
             <dependency>
                 <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-7.0</artifactId>
+                <artifactId>jboss-jakartaee-8.0</artifactId>
                 <version>${version.jboss.javaee}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -114,8 +116,26 @@
             <dependency>
                 <groupId>org.jboss.arquillian.extension</groupId>
                 <artifactId>arquillian-warp</artifactId>
-                <version>1.0.0.Alpha7</version>
+                <version>1.0.0</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                </exclusions>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-1.2-api</artifactId>
+                <version>2.17.1</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-core</artifactId>
+                <version>2.17.1</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.jboss.arquillian.extension</groupId>
@@ -127,7 +147,7 @@
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-multipart-provider</artifactId>
-                <version>3.0.19.Final</version>
+                <version>${version.resteasy}</version>
                 <scope>provided</scope>
                 <exclusions>
                     <exclusion>
@@ -198,6 +218,28 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-core</artifactId>
+                <version>3.8.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${version.httpcomponents}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${version.httpcomponents}</version>
+            </dependency>
+            <!-- Placeholder dependency for letting PNC manage the 'version' value properly -->
+            <dependency>
+                <groupId>org.jboss.windup</groupId>
+                <artifactId>windup-cli-parent</artifactId>
+                <version>${version.windup.cli}</version>
+                <type>pom</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -233,7 +275,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.2</version>
+                    <version>3.8.1</version>
                     <configuration>
                         <compilerVersion>${maven.compiler.target}</compilerVersion>
                         <source>${maven.compiler.target}</source>
@@ -323,5 +365,56 @@
             </build>
         </profile>
 
+        <profile>
+            <id>windup</id>
+            <activation>
+                <property>
+                    <name>!downstream</name>
+                </property>
+            </activation>
+            <properties>
+                <product-name>windup</product-name>
+                <windup.distribution.name>windup-cli</windup.distribution.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>mta</id>
+            <activation>
+                <property>
+                    <name>downstream</name>
+                    <value>mta</value>
+                </property>
+            </activation>
+            <properties>
+                <product-name>mta</product-name>
+                <windup.distribution.name>mta-cli</windup.distribution.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>tackle</id>
+            <activation>
+                <property>
+                    <name>downstream</name>
+                    <value>tackle</value>
+                </property>
+            </activation>
+            <properties>
+                <product-name>tackle</product-name>
+                <windup.distribution.name>tackle-cli</windup.distribution.name>
+            </properties>
+        </profile>
+        <profile>
+            <id>mtr</id>
+            <activation>
+                <property>
+                    <name>downstream</name>
+                    <value>mtr</value>
+                </property>
+            </activation>
+            <properties>
+                <product-name>mtr</product-name>
+                <windup.distribution.name>mtr-cli</windup.distribution.name>
+            </properties>
+        </profile>
     </profiles>
 </project>

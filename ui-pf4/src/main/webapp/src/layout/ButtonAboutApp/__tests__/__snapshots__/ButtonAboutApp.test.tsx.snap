@@ -17,28 +17,26 @@ exports[`Test snapshot :: open modal 1`] = `
   <AboutModal
     appendTo={null}
     backgroundImageSrc=""
-    brandImageAlt="Red Hat"
-    brandImageSrc="red-hat-horizontal-reverse.svg"
+    brandImageAlt="Brand Image"
+    brandImageSrc="windup-logo.svg"
     className="about-app__component"
     isOpen={true}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Migration Toolkit for Applications"
+    productName="Windup"
     trademark=""
   >
-    <TextContent
-      className="pf-u-py-xl"
-    >
+    <TextContent>
       <h4>
         About
       </h4>
       <p>
         <a
-          href="https://developers.redhat.com/products/mta/overview/"
+          href="https://windup.github.io/"
           rel="noopener noreferrer"
           target="_blank"
         >
-          Migration Toolkit for Applications
+          Windup
         </a>
          
         allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
@@ -56,7 +54,8 @@ exports[`Test snapshot :: open modal 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Core
+            Windup
+             Core
           </span>
         </GridItem>
         <GridItem
@@ -70,7 +69,8 @@ exports[`Test snapshot :: open modal 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Web Console
+            Windup
+             Web Console
           </span>
         </GridItem>
         <GridItem
@@ -85,7 +85,7 @@ exports[`Test snapshot :: open modal 1`] = `
       <List>
         <ListItem>
           <a
-            href="https://developers.redhat.com/products/mta/overview/"
+            href="https://windup.github.io/"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -94,7 +94,7 @@ exports[`Test snapshot :: open modal 1`] = `
         </ListItem>
         <ListItem>
           <a
-            href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+            href="https://windup.github.io/"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -103,9 +103,41 @@ exports[`Test snapshot :: open modal 1`] = `
         </ListItem>
       </List>
     </TextContent>
-    <div
-      className="pf-c-about-modal-box__strapline"
+    <TextContent
+      className="pf-u-py-xl"
     >
+      <p>
+        The Icon Library used in this project is a derivative of the
+         
+        <a
+          href="https://www.redhat.com/en/about/brand/standards/icons/standard-icons"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Standard Icons library
+        </a>
+         
+        by
+         
+        <a
+          href="https://www.redhat.com/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Red Hat
+        </a>
+        , used under
+         
+        <a
+          href="https://creativecommons.org/licenses/by/4.0/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          CC BY 4.0
+        </a>
+      </p>
+    </TextContent>
+    <div>
       <Flex>
         <FlexItem>
           <a
@@ -215,28 +247,26 @@ exports[`Test snapshot 1`] = `
   <AboutModal
     appendTo={null}
     backgroundImageSrc=""
-    brandImageAlt="Red Hat"
-    brandImageSrc="red-hat-horizontal-reverse.svg"
+    brandImageAlt="Brand Image"
+    brandImageSrc="windup-logo.svg"
     className="about-app__component"
     isOpen={false}
     noAboutModalBoxContentContainer={false}
     onClose={[Function]}
-    productName="Migration Toolkit for Applications"
+    productName="Windup"
     trademark=""
   >
-    <TextContent
-      className="pf-u-py-xl"
-    >
+    <TextContent>
       <h4>
         About
       </h4>
       <p>
         <a
-          href="https://developers.redhat.com/products/mta/overview/"
+          href="https://windup.github.io/"
           rel="noopener noreferrer"
           target="_blank"
         >
-          Migration Toolkit for Applications
+          Windup
         </a>
          
         allows application architects and developers to quickly decompile, analyze, assess and modernize large scale application portfolios and migrate them to Red Hat Middleware, cloud and containers.
@@ -254,7 +284,8 @@ exports[`Test snapshot 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Core
+            Windup
+             Core
           </span>
         </GridItem>
         <GridItem
@@ -268,7 +299,8 @@ exports[`Test snapshot 1`] = `
           <span
             className="dt"
           >
-            Migration Toolkit for Applications Web Console
+            Windup
+             Web Console
           </span>
         </GridItem>
         <GridItem
@@ -283,7 +315,7 @@ exports[`Test snapshot 1`] = `
       <List>
         <ListItem>
           <a
-            href="https://developers.redhat.com/products/mta/overview/"
+            href="https://windup.github.io/"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -292,7 +324,7 @@ exports[`Test snapshot 1`] = `
         </ListItem>
         <ListItem>
           <a
-            href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+            href="https://windup.github.io/"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -301,9 +333,41 @@ exports[`Test snapshot 1`] = `
         </ListItem>
       </List>
     </TextContent>
-    <div
-      className="pf-c-about-modal-box__strapline"
+    <TextContent
+      className="pf-u-py-xl"
     >
+      <p>
+        The Icon Library used in this project is a derivative of the
+         
+        <a
+          href="https://www.redhat.com/en/about/brand/standards/icons/standard-icons"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Standard Icons library
+        </a>
+         
+        by
+         
+        <a
+          href="https://www.redhat.com/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Red Hat
+        </a>
+        , used under
+         
+        <a
+          href="https://creativecommons.org/licenses/by/4.0/"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          CC BY 4.0
+        </a>
+      </p>
+    </TextContent>
+    <div>
       <Flex>
         <FlexItem>
           <a

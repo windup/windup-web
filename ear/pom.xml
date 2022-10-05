@@ -5,20 +5,14 @@
     <parent>
         <groupId>org.jboss.windup.web</groupId>
         <artifactId>windup-web-parent</artifactId>
-        <version>5.1.1-SNAPSHOT</version>
+        <version>6.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>mta-ear</artifactId>
-    <name>MTA Web Console</name>
+    <artifactId>windup-ear</artifactId>
+    <name>Windup Web Console</name>
     <packaging>ear</packaging>
 
     <dependencies>
-        <dependency>
-            <groupId>org.jboss.windup.web</groupId>
-            <artifactId>windup-web-ui</artifactId>
-            <type>war</type>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.jboss.windup.web</groupId>
             <artifactId>windup-web-ui-pf4</artifactId>
@@ -34,7 +28,7 @@
     </dependencies>
 
     <build>
-        <finalName>mta</finalName>
+        <finalName>windup</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -45,23 +39,17 @@
                        <webModule>
                             <groupId>org.jboss.windup.web</groupId>
                             <artifactId>windup-web-services</artifactId>
-                            <contextRoot>/mta-web/api</contextRoot>
+                            <contextRoot>/windup-web/api</contextRoot>
                             <bundleFileName>api.war</bundleFileName>
                         </webModule>
                         <webModule>
                             <groupId>org.jboss.windup.web</groupId>
-                            <artifactId>windup-web-ui</artifactId>
-                            <contextRoot>/mta-web</contextRoot>
-                            <bundleFileName>mta-web.war</bundleFileName>
-                        </webModule>
-                        <webModule>
-                            <groupId>org.jboss.windup.web</groupId>
                             <artifactId>windup-web-ui-pf4</artifactId>
-                            <contextRoot>/mta-ui</contextRoot>
-                            <bundleFileName>mta-ui.war</bundleFileName>
+                            <contextRoot>/windup-ui</contextRoot>
+                            <bundleFileName>windup-ui.war</bundleFileName>
                         </webModule>
                     </modules>
-                    <fileNameMapping>no-version</fileNameMapping>
+                    <outputFileNameMapping>no-version</outputFileNameMapping>
                 </configuration>
             </plugin>
         </plugins>

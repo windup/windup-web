@@ -173,11 +173,28 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
         "Indicates whether the input file or directory is a source code or compiled binaries (default).",
     },
   ],
+  [
+    AdvancedOptionsFieldKey.ANALYZE_KNOWN_LIBRARIES,
+    {
+      label: "Analyze known libraries",
+      type: "switch",
+    },
+  ],
+  [
+    AdvancedOptionsFieldKey.TRANSTRACTION_ANALYSIS,
+    {
+      label: "Transaction analysis",
+      type: "switch",
+    },
+  ],
 ]);
 
 // Schema
 
-export const buildSchema = (availableOptions: ConfigurationOption[]) => {
+export const buildSchema = (
+  availableOptions: ConfigurationOption[],
+  analysisContext: AnalysisContext
+) => {
   const schema: any = {};
 
   getMapKeys(Fields).forEach((fieldKey: AdvancedOptionsFieldKey) => {
@@ -212,7 +229,7 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
       (value) => {
         if (!value) return true;
 
-        let values: any[];
+        let values: (string | boolean)[];
         if (typeof value === "string" || typeof value === "boolean") {
           values = [value];
         } else if (Array.isArray(value)) {
@@ -223,10 +240,13 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
 
         return Promise.all(
           values.map((f) =>
-            validateAdvancedOptionValue({
-              name: fieldKey,
-              value: f,
-            } as AdvancedOption)
+            validateAdvancedOptionValue(
+              {
+                name: fieldKey,
+                value: f,
+              } as AdvancedOption,
+              analysisContext
+            )
           )
         )
           .then((responses) => {
@@ -234,7 +254,10 @@ export const buildSchema = (availableOptions: ConfigurationOption[]) => {
 
             return !isValid
               ? new ValidationError(
-                  responses.map((f) => f.data.message),
+                  responses
+                    .filter((f) => f.data.level === "ERROR")
+                    .map((f) => f.data.message)
+                    .join(" | "),
                   value,
                   fieldKey
                 )

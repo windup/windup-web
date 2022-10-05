@@ -17,6 +17,7 @@ import {
   ButtonVariant,
   List,
   ListItem,
+  Alert,
 } from "@patternfly/react-core";
 import { css } from "@patternfly/react-styles";
 import styles from "@patternfly/react-styles/css/components/Wizard/wizard";
@@ -70,7 +71,7 @@ const getAdvancedOptionsWithExclusion = (
 
 interface ReviewProps extends RouteComponentProps<ProjectRoute> {}
 
-export const Review: React.FC<ReviewProps> = ({ match, history }) => {
+export const Review: React.FC<ReviewProps> = ({ match, history, location }) => {
   const dispatch = useDispatch();
 
   const {
@@ -103,6 +104,24 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
     loadRules(match.params.project);
     loadLabels(match.params.project);
   }, [match, loadProject, loadRules, loadLabels]);
+
+  // Verify AnalysisContext has valid configuration
+  const [isAnalysisContextValid, setIsAnalysisContextValidhownError] = useState(
+    true
+  );
+
+  useEffect(() => {
+    if (
+      analysisContext &&
+      analysisContext.advancedOptions.filter(
+        (f) => f.name === AdvancedOptionsFieldKey.TARGET
+      ).length === 0
+    ) {
+      setIsAnalysisContextValidhownError(false);
+    }
+  }, [analysisContext]);
+
+  // Event Handlers
 
   const handleSaveAndRun = (createExecution: boolean) => {
     setIsCreatingExecution(true);
@@ -139,19 +158,21 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
   };
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {
-    history.push(
-      formatPath(getPathFromStep(newStep), {
+    history.push({
+      pathname: formatPath(getPathFromStep(newStep), {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnBackStep = () => {
-    history.push(
-      formatPath(Paths.newProject_advandedOptions, {
+    history.push({
+      pathname: formatPath(Paths.newProject_advandedOptions, {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnCancel = () => redirectOnCancel(history.push);
@@ -173,7 +194,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
           <Button
             variant={ButtonVariant.primary}
             onClick={() => handleSaveAndRun(false)}
-            isDisabled={disableNav}
+            isDisabled={disableNav || !isAnalysisContextValid}
           >
             Save
           </Button>
@@ -181,7 +202,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
             variant={ButtonVariant.primary}
             type="submit"
             onClick={() => handleSaveAndRun(true)}
-            isDisabled={disableNav}
+            isDisabled={disableNav || !isAnalysisContextValid}
           >
             Save and run
           </Button>
@@ -207,6 +228,13 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
         then={<LoadingWizardContent />}
       >
         <Stack hasGutter>
+          {!isAnalysisContextValid && (
+            <StackItem>
+              <Alert isInline variant="danger" title="Invalid configuration">
+                You have no Targets selected.
+              </Alert>
+            </StackItem>
+          )}
           <StackItem>
             <TextContent>
               <Title headingLevel="h5" size={TitleSizes["lg"]}>
@@ -244,12 +272,25 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
-                  <DescriptionListTerm>Target</DescriptionListTerm>
+                  <DescriptionListTerm>Targets</DescriptionListTerm>
                   <DescriptionListDescription>
                     {analysisContext.advancedOptions
                       .filter((f) => f.name === AdvancedOptionsFieldKey.TARGET)
                       .map((f) => f.value)
                       .join(", ")}
+                  </DescriptionListDescription>
+                </DescriptionListGroup>
+                <DescriptionListGroup>
+                  <DescriptionListTerm>Sources</DescriptionListTerm>
+                  <DescriptionListDescription>
+                    {nullabeContent(
+                      analysisContext.advancedOptions
+                        .filter(
+                          (f) => f.name === AdvancedOptionsFieldKey.SOURCE
+                        )
+                        .map((f) => f.value)
+                        .join(", ")
+                    )}
                   </DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
@@ -312,6 +353,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
                   <DescriptionListTerm>Advanced options</DescriptionListTerm>
                   <DescriptionListDescription>
                     {getAdvancedOptionsWithExclusion(analysisContext, [
+                      AdvancedOptionsFieldKey.SOURCE,
                       AdvancedOptionsFieldKey.TARGET,
                     ]).length > 0 ? (
                       <table
@@ -331,6 +373,7 @@ export const Review: React.FC<ReviewProps> = ({ match, history }) => {
                         </thead>
                         <tbody>
                           {getAdvancedOptionsWithExclusion(analysisContext, [
+                            AdvancedOptionsFieldKey.SOURCE,
                             AdvancedOptionsFieldKey.TARGET,
                           ]).map((option, index) => (
                             <tr key={index} role="row">

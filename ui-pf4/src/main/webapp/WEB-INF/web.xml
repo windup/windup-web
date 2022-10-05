@@ -16,7 +16,7 @@
             <param-value>
                 /static/;
                 /asset.manifest.json;
-                /favicon.ico;
+                /favicon.png;
                 /index.html;
                 /keycloak.json;
                 /logo192.png;
@@ -75,10 +75,6 @@
             <role-name>user</role-name>
         </auth-constraint>
     </security-constraint>
-
-    <login-config>
-        <auth-method>KEYCLOAK</auth-method>
-    </login-config>
 
     <security-role>
         <role-name>user</role-name>

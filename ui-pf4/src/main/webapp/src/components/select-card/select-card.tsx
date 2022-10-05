@@ -12,7 +12,6 @@ import {
   SelectOptionObject,
   EmptyStateBody,
 } from "@patternfly/react-core";
-import { CubesIcon } from "@patternfly/react-icons";
 
 import "./select-card.scss";
 import { useState } from "react";
@@ -30,6 +29,7 @@ export interface SelectCardProps {
   iconSrc?: string;
   isSelected: boolean;
   value: string;
+  isNew?: boolean;
   onChange: (isSelected: boolean, value: string) => void;
 }
 
@@ -41,6 +41,7 @@ export const SelectCard: React.FC<SelectCardProps> = ({
   iconSrc,
   isSelected,
   value,
+  isNew,
   onChange,
 }) => {
   const [isSelectOpen, setIsSelectOpen] = useState(false);
@@ -72,8 +73,8 @@ export const SelectCard: React.FC<SelectCardProps> = ({
     onChange(true, selection as any);
   };
 
-  const getImage = (): React.ComponentType<any> => {
-    let result: React.ComponentType<any> = CubesIcon;
+  const getImage = (): React.ComponentType<any> | undefined => {
+    let result: React.ComponentType<any> | undefined = undefined;
     if (icon) {
       result = icon;
     } else if (iconSrc) {
@@ -97,10 +98,29 @@ export const SelectCard: React.FC<SelectCardProps> = ({
           variant={EmptyStateVariant.small}
           className="select-card__component__empty-state"
         >
-          <EmptyStateIcon icon={getImage()} />
+          {getImage() && <EmptyStateIcon icon={getImage()} />}
           <Title headingLevel="h4" size="md">
             {label}
           </Title>
+          {isNew && (
+            <Title
+              headingLevel="h4"
+              size="md"
+              style={Array.isArray(options) ? { paddingBottom: 5 } : {}}
+            >
+              <b>
+                <i
+                  style={{
+                    background: "rgb(255, 207, 0)",
+                    color: "black",
+                    padding: "0.19rem 0.625rem",
+                  }}
+                >
+                  New
+                </i>
+              </b>
+            </Title>
+          )}
           {Array.isArray(options) && (
             <Select
               variant={SelectVariant.single}

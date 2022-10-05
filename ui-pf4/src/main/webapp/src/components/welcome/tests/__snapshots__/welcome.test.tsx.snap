@@ -19,10 +19,12 @@ exports[`Welcome Renders without crashing 1`] = `
     headingLevel="h4"
     size="lg"
   >
-    Welcome to the Migration Toolkit for Applications
+    Welcome to 
+    Windup
   </Title>
   <EmptyStateBody>
-    The Migration Toolkit for Applications helps you assess and perform large-scale application migrations and modernizations. Start by creating a project for your applications.
+    Windup
+     helps you assess and perform large-scale application migrations and modernizations. Start by creating a project for your applications.
   </EmptyStateBody>
   <Button
     onClick={[Function]}
@@ -33,7 +35,7 @@ exports[`Welcome Renders without crashing 1`] = `
   <EmptyStateSecondaryActions>
     To learn more, visit the
     <a
-      href="https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/"
+      href="https://windup.github.io/"
       rel="noopener noreferrer"
       target="_blank"
     >

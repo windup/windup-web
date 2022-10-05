@@ -44,7 +44,7 @@ public class MigrationProjectServiceTest {
     public void testCreateProject()
     {
         MigrationProject project = new MigrationProject();
-        project.setId(new Long(1));
+        project.setId(1L);
         ArrayList projectList = new ArrayList();
 
         TypedQuery mockQuery = mock(TypedQuery.class);
@@ -66,7 +66,7 @@ public class MigrationProjectServiceTest {
     public void testDeleteProject()
     {
         MigrationProject project = new MigrationProject();
-        project.setId(new Long(1));
+        project.setId(1L);
         project.setTitle("testProject");
         RegisteredApplication app = new RegisteredApplication();
         PackageMetadata pm = new PackageMetadata();
@@ -101,7 +101,7 @@ public class MigrationProjectServiceTest {
     public void testDeleteProjectWithIncludedPackagesFromDeletedApplication()
     {
         MigrationProject project = new MigrationProject();
-        project.setId(new Long(1));
+        project.setId(1L);
         project.setTitle("testProject");
         RegisteredApplication app = new RegisteredApplication();
         PackageMetadata pm = new PackageMetadata();

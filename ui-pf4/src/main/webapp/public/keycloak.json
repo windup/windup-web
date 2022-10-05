@@ -1,7 +1,7 @@
 {
-  "realm": "mta",
+  "realm": "windup",
   "auth-server-url": "http://localhost:8080/auth/",
   "ssl-required": "none",
-  "resource": "mta-web",
+  "resource": "windup-web",
   "public-client": true
 }

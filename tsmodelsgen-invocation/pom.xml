@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.jboss</groupId>
         <artifactId>jboss-parent</artifactId>
-        <version>22</version>
+        <version>37</version>
         <relativePath />
     </parent>
 
     <groupId>org.jboss.windup.web.ui</groupId>
     <artifactId>windup-web-ui-tsmodels</artifactId>
-    <version>5.1.1-SNAPSHOT</version>
+    <version>6.0.1-SNAPSHOT</version>
 
     <name>Windup Web - Generate TS Models</name>
 
@@ -31,14 +31,15 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
 
-        <version.windup.core>5.1.1-SNAPSHOT</version.windup.core>
+        <version.windup.core>6.0.1-SNAPSHOT</version.windup.core>
+        <version.windup.ruleset>6.0.1-SNAPSHOT</version.windup.ruleset>
         <!-- For now, we need to pass this to the Mojo explicitly (through META-INF/versions.properties),
              but it should be possible to figure that out from the Windup POM. -->
-        <version.forge>3.9.2.Final</version.forge>
-        <version.furnace>2.28.4.Final</version.furnace>
+        <version.forge>3.10.0.Final</version.forge>
+        <version.furnace>2.29.1.Final</version.furnace>
     </properties>
 
     <distributionManagement>
@@ -64,6 +65,11 @@
             <dependency>
                 <groupId>org.jboss.windup.rules</groupId>
                 <artifactId>windup-rulesets</artifactId>
+                <version>${version.windup.ruleset}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.windup.config</groupId>
+                <artifactId>windup-config-impl</artifactId>
                 <version>${version.windup.core}</version>
             </dependency>
         </dependencies>

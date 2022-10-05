@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.windup.web</groupId>
         <artifactId>windup-web-parent</artifactId>
-        <version>5.1.1-SNAPSHOT</version>
+        <version>6.0.1-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -22,7 +22,7 @@
         <!-- Java EE -->
         <dependency>
             <groupId>org.jboss.spec</groupId>
-            <artifactId>jboss-javaee-7.0</artifactId>
+            <artifactId>jboss-jakartaee-8.0</artifactId>
             <version>${version.jboss.javaee}</version>
             <type>pom</type>
             <scope>provided</scope>
@@ -110,6 +110,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.jboss.windup.config</groupId>
+            <artifactId>windup-config-xml</artifactId>
+            <classifier>forge-addon</classifier>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jboss.windup.graph</groupId>
             <artifactId>windup-graph-api</artifactId>
             <scope>compile</scope>
@@ -139,6 +145,16 @@
             <groupId>org.jboss.windup</groupId>
             <artifactId>windup-server-provider-spi</artifactId>
             <classifier>forge-addon</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.windup</groupId>
+            <artifactId>windup-bootstrap-${product-name}</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.windup.rules.apps</groupId>
+                    <artifactId>windup-rules-java-diva</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- Rules -->
@@ -181,6 +197,7 @@
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
             <artifactId>arquillian-warp</artifactId>
+            <version>1.0.0</version>
             <scope>test</scope>
             <type>pom</type>
             <exclusions>
@@ -188,7 +205,23 @@
                     <groupId>org.apache.httpcomponents</groupId>
                     <artifactId>httpcore</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-1.2-api</artifactId>
+            <version>2.17.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.17.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.extension</groupId>
@@ -213,6 +246,7 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <version>3.1.4</version>
             <scope>test</scope>
             <type>pom</type>
         </dependency>
@@ -270,7 +304,7 @@
     </dependencies>
 
     <build>
-        <finalName>mta-web/api</finalName>
+        <finalName>windup-web/api</finalName>
 
         <resources>
             <resource>
@@ -310,8 +344,8 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.jboss.windup</groupId>
-                                    <artifactId>mta-cli</artifactId>
-                                    <version>${version.windup}</version>
+                                    <artifactId>${windup.distribution.name}</artifactId>
+                                    <version>${version.windup.cli}</version>
                                     <classifier>offline</classifier>
                                     <type>zip</type>
                                 </artifactItem>
@@ -337,7 +371,7 @@
                         <inherited>false</inherited>
                         <configuration>
                             <overwrite>false</overwrite>
-                            <addonRepository>${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup}/addons</addonRepository>
+                            <addonRepository>${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup.cli}/addons</addonRepository>
                             <addonIds>
                                 <addonId>org.jboss.windup.web.addons:windup-web-support,${project.version}</addonId>
                                 <addonId>org.jboss.windup.web.addons:windup-web-messaging-executor,${project.version}</addonId>
@@ -357,7 +391,19 @@
                         </goals>
                         <configuration>
                             <target>
-                                <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" />
+                                <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}-${version.windup.cli}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>rename-windup-distribution</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <move file="${project.build.directory}/${project.build.finalName}/WEB-INF/${windup.distribution.name}" tofile="${project.build.directory}/${project.build.finalName}/WEB-INF/windup-cli" />
                             </target>
                         </configuration>
                     </execution>
@@ -412,7 +458,7 @@
             <plugin>
                 <groupId>org.bsc.maven</groupId>
                 <artifactId>maven-processor-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>4.5</version>
                 <executions>
                     <execution>
                         <id>process</id>
@@ -434,7 +480,7 @@
                         <version>${version.hibernate}</version>
                     </dependency>
                 </dependencies>
-                </plugin>
+            </plugin>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
@@ -481,7 +527,7 @@
             <id>debug</id>
             <activation> <property> <name>debug</name> </property> </activation>
             <properties>
-                <jvm.debug.argsx>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y</jvm.debug.argsx>
+                <jvm.debug.args>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y</jvm.debug.args>
             </properties>
         </profile>
 
@@ -489,11 +535,14 @@
             <id>arquillian-wildfly-10-managed</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>debug</name>
+                </property>
             </activation>
             <dependencies>
                 <dependency>
                     <groupId>org.jboss.spec</groupId>
-                    <artifactId>jboss-javaee-7.0</artifactId>
+                    <artifactId>jboss-jakartaee-8.0</artifactId>
                     <version>${version.jboss.javaee}</version>
                     <type>pom</type>
                     <scope>provided</scope>
@@ -543,7 +592,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <systemPropertyVariables>
-                                <server.jvm.args>${surefire.server.jvm.args}</server.jvm.args>
+                                <server.jvm.args>${jvm.debug.args}</server.jvm.args>
                                 <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                             </systemPropertyVariables>
                         </configuration>
@@ -598,8 +647,8 @@
         <dependencies>
             <dependency>
                 <groupId>org.jboss.spec</groupId>
-                <artifactId>jboss-javaee-6.0</artifactId>
-                <version>3.0.3.Final</version>
+                <artifactId>jboss-jakartaee-8.0</artifactId>
+                <version>${version.jboss.javaee}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

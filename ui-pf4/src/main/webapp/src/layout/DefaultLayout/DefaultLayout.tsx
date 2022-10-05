@@ -7,7 +7,7 @@ import { HeaderApp } from "../HeaderApp";
 import { SidebarApp } from "../SidebarApp";
 
 export const DefaultLayout: React.FC = ({ children }) => {
-  const [showBanner, setShowBanner] = useState(true);
+  const [showBanner, setShowBanner] = useState(false);
 
   const pageId = "main-content-page-layout-horizontal-nav";
   const PageSkipToContent = (
@@ -35,11 +35,15 @@ export const DefaultLayout: React.FC = ({ children }) => {
                 <div className="pf-u-display-none pf-u-display-block-on-lg"></div>
                 <div className="pf-u-display-none pf-u-display-block-on-lg">
                   Continue using&nbsp;
-                  <a href={`${window.location.origin}/mta-web`}>previous UI</a>
+                  <a href={`${window.location.origin}/windup-web`}>
+                    previous UI
+                  </a>
                 </div>
                 <div className="pf-u-display-none-on-lg">
                   Continue using&nbsp;
-                  <a href={`${window.location.origin}/mta-web`}>previous UI</a>
+                  <a href={`${window.location.origin}/windup-web`}>
+                    previous UI
+                  </a>
                 </div>
                 <div className="pf-u-display-none pf-u-display-block-on-lg">
                   <Button

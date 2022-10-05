@@ -18,6 +18,7 @@ import java.util.Properties;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -36,10 +37,7 @@ import org.jboss.windup.web.addons.websupport.WebPathUtil;
 import org.jboss.windup.web.addons.websupport.services.LogService;
 import org.jboss.windup.web.furnaceserviceprovider.FromFurnace;
 import org.jboss.windup.web.services.json.WindupExecutionJSONUtil;
-import org.jboss.windup.web.services.model.AnalysisContext;
-import org.jboss.windup.web.services.model.MigrationProject;
-import org.jboss.windup.web.services.model.RegisteredApplication;
-import org.jboss.windup.web.services.model.WindupExecution;
+import org.jboss.windup.web.services.model.*;
 import org.jboss.windup.web.services.service.WindupExecutionService;
 import org.kamranzafar.jtar.TarEntry;
 import org.kamranzafar.jtar.TarOutputStream;
@@ -172,6 +170,22 @@ public class WindupEndpointImpl implements WindupEndpoint
                 {
                     addFileToTar(tarOutputStream, application.getInputPath());
                 }
+
+                List<RulesPath> userProvidedRulesPath = execution.getAnalysisContext().getRulesPaths().stream()
+                        .filter(rulePath -> rulePath.getRulesPathType().equals(PathType.USER_PROVIDED))
+                        .collect(Collectors.toList());
+                List<LabelsPath> userProvidedLabelsPath = execution.getAnalysisContext().getLabelsPaths().stream()
+                        .filter(rulePath -> rulePath.getLabelsPathType().equals(PathType.USER_PROVIDED))
+                        .collect(Collectors.toList());
+                for (RulesPath rulePath : userProvidedRulesPath)
+                {
+                    addFileToTar(tarOutputStream, rulePath.getPath());
+                }
+                for (LabelsPath labelPath : userProvidedLabelsPath)
+                {
+                    addFileToTar(tarOutputStream, labelPath.getPath());
+                }
+
                 tarOutputStream.flush();
                 tarOutputStream.close();
             }

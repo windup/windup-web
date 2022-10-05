@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.windup.web</groupId>
         <artifactId>windup-web-parent</artifactId>
-        <version>5.1.1-SNAPSHOT</version>
+        <version>6.0.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>furnace-service-provider</artifactId>
@@ -35,8 +35,7 @@
         <!-- Servlet -->
         <dependency>
             <groupId>org.jboss.spec.javax.servlet</groupId>
-            <artifactId>jboss-servlet-api_3.1_spec</artifactId>
-            <version>1.0.0.Final</version>
+            <artifactId>jboss-servlet-api_4.0_spec</artifactId>
             <scope>provided</scope>
         </dependency>
 

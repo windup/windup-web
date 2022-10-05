@@ -24,70 +24,6 @@ exports[`Test snapshot 1`] = `
       }
     }
   >
-    <FlexItem>
-      <Banner
-        isSticky={true}
-        variant="default"
-      >
-        <Flex
-          flexWrap={
-            Object {
-              "default": "nowrap",
-            }
-          }
-          justifyContent={
-            Object {
-              "default": "justifyContentCenter",
-              "lg": "justifyContentSpaceBetween",
-            }
-          }
-        >
-          <div
-            className="pf-u-display-none pf-u-display-block-on-lg"
-          />
-          <div
-            className="pf-u-display-none pf-u-display-block-on-lg"
-          >
-            Continue using 
-            <a
-              href="http://localhost/mta-web"
-            >
-              previous UI
-            </a>
-          </div>
-          <div
-            className="pf-u-display-none-on-lg"
-          >
-            Continue using 
-            <a
-              href="http://localhost/mta-web"
-            >
-              previous UI
-            </a>
-          </div>
-          <div
-            className="pf-u-display-none pf-u-display-block-on-lg"
-          >
-            <Button
-              aria-label="Action"
-              onClick={[Function]}
-              style={
-                Object {
-                  "padding": 0,
-                }
-              }
-              variant="plain"
-            >
-              <TimesIcon
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
-              />
-            </Button>
-          </div>
-        </Flex>
-      </Banner>
-    </FlexItem>
     <FlexItem
       grow={
         Object {
@@ -102,6 +38,7 @@ exports[`Test snapshot 1`] = `
     >
       <Page
         defaultManagedSidebarIsOpen={true}
+        getBreakpoint={[Function]}
         header={<HeaderApp />}
         isBreadcrumbWidthLimited={false}
         isManagedSidebar={true}

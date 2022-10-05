@@ -8,8 +8,11 @@ exports[`Welcome Renders without crashing 1`] = `
     isPersistent={true}
   >
     <Select
+      aria-describedby=""
+      aria-invalid={false}
       aria-label="Select sort by"
       aria-labelledby="page-layout-table-column-management-action-toolbar-top-select-checkbox-label page-layout-table-column-management-action-toolbar-top-select-checkbox-toggle"
+      chipGroupComponent={null}
       className=""
       clearSelectionsAriaLabel="Clear all"
       createText="Create"
@@ -19,11 +22,16 @@ exports[`Welcome Renders without crashing 1`] = `
       favorites={Array []}
       favoritesLabel="Favorites"
       hasInlineFilter={false}
+      hasPlaceholderStyle={false}
       inlineFilterPlaceholderText={null}
+      inputAutoComplete="off"
       inputIdPrefix=""
       isCreatable={false}
+      isCreateSelectOptionObject={false}
       isDisabled={false}
       isGrouped={false}
+      isInputFilterPersisted={false}
+      isInputValuePersisted={false}
       isOpen={false}
       isPlain={false}
       menuAppendTo="inline"
@@ -33,6 +41,7 @@ exports[`Welcome Renders without crashing 1`] = `
       onFilter={null}
       onSelect={[Function]}
       onToggle={[Function]}
+      onTypeaheadInputChanged={null}
       ouiaSafe={true}
       placeholderText={
         <React.Fragment>
@@ -45,12 +54,14 @@ exports[`Welcome Renders without crashing 1`] = `
           Option1
         </React.Fragment>
       }
+      position="left"
       removeSelectionAriaLabel="Remove"
       selections="Option1"
       toggleAriaLabel="Options menu"
       toggleIcon={null}
       toggleId={null}
       typeAheadAriaLabel=""
+      validated="default"
       variant="single"
       width=""
     >
@@ -62,6 +73,9 @@ exports[`Welcome Renders without crashing 1`] = `
         isChecked={false}
         isDisabled={false}
         isFavorite={null}
+        isLastOptionBeforeFooter={[Function]}
+        isLoad={false}
+        isLoading={false}
         isNoResultsOption={false}
         isPlaceholder={false}
         isSelected={false}
@@ -69,6 +83,7 @@ exports[`Welcome Renders without crashing 1`] = `
         keyHandler={[Function]}
         onClick={[Function]}
         sendRef={[Function]}
+        setViewMoreNextIndex={[Function]}
         value="Option1"
       />
       <SelectOption
@@ -79,6 +94,9 @@ exports[`Welcome Renders without crashing 1`] = `
         isChecked={false}
         isDisabled={false}
         isFavorite={null}
+        isLastOptionBeforeFooter={[Function]}
+        isLoad={false}
+        isLoading={false}
         isNoResultsOption={false}
         isPlaceholder={false}
         isSelected={false}
@@ -86,6 +104,7 @@ exports[`Welcome Renders without crashing 1`] = `
         keyHandler={[Function]}
         onClick={[Function]}
         sendRef={[Function]}
+        setViewMoreNextIndex={[Function]}
         value="Option2"
       />
     </Select>

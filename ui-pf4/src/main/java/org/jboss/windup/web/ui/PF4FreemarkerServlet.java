@@ -28,8 +28,14 @@ public class PF4FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServl
 {
     public static final String USER_PRINCIPAL = "userPrincipal";
     public static final String KEYCLOAK = "keycloak";
-    public static final String PUBLIC_KEY = "publicKey";
     public static final String SERVER_URL = "serverUrl";
+    public static final String REALM = "realm";
+    public static final String SSL_REQUIRED = "sslRequired";
+    public static final String CLIENT_ID = "clientId";
+
+    // Property to pass to the UI indicating SSO is enabled
+    public static final String UI_SSO_ENABLED = "ssoEnabled";
+
     private static Logger LOG = Logger.getLogger(PF4FreemarkerServlet.class.getName());
 
     @Override
@@ -74,9 +80,13 @@ public class PF4FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServl
                 }
             });
 
+            hashModel.put(UI_SSO_ENABLED, String.valueOf(System.getProperty("keycloak.server.url") != null));
+
             Map<String, String> keycloakProperties = new HashMap<>();
-            keycloakProperties.put(PUBLIC_KEY, System.getProperty("keycloak.realm.public.key"));
-            keycloakProperties.put(SERVER_URL, System.getProperty("keycloak.server.url"));
+            keycloakProperties.put(SERVER_URL, System.getProperty("keycloak.server.url", "***"));
+            keycloakProperties.put(REALM, System.getProperty("keycloak.realm", "***"));
+            keycloakProperties.put(SSL_REQUIRED, System.getProperty("keycloak.sslRequired", "***").toLowerCase());
+            keycloakProperties.put(CLIENT_ID, System.getProperty("keycloak.clientId", "***"));
 
             hashModel.put(KEYCLOAK, keycloakProperties);
 
@@ -89,12 +99,12 @@ public class PF4FreemarkerServlet extends freemarker.ext.servlet.FreemarkerServl
 
             /*
              * 1) Read env. variable, if set,
-             * 2) If not, use system property mta.apiServer.url as fallback,
-             * 3) If system property not set, use current address + mta-web-services as fallback
+             * 2) If not, use system property windup.apiServer.url as fallback,
+             * 3) If system property not set, use current address + windup-web-services as fallback
              */
             String apiServerUrl = this.readEnvVariable(
-                    "MTA_API_SERVER_URL",
-                    System.getProperty("mta.apiServer.url", serverAddress + "/mta-ui/api")
+                    "WINDUP_API_SERVER_URL",
+                    System.getProperty("windup.apiServer.url", serverAddress + "/windup-ui/api")
             );
 
             hashModel.put("apiServerUrl", apiServerUrl);

@@ -21,6 +21,7 @@ interface SetCustomLabelsProps extends RouteComponentProps<ProjectRoute> {}
 export const SetCustomLabels: React.FC<SetCustomLabelsProps> = ({
   match,
   history,
+  location,
 }) => {
   const cancelWizard = useCancelWizard();
 
@@ -37,27 +38,30 @@ export const SetCustomLabels: React.FC<SetCustomLabelsProps> = ({
   }, [match, loadProject]);
 
   const onGoToStep = (newStep: NewProjectWizardStepIds) => {
-    history.push(
-      formatPath(getPathFromStep(newStep), {
+    history.push({
+      pathname: formatPath(getPathFromStep(newStep), {
         project: project?.id,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnBack = () => {
-    history.push(
-      formatPath(Paths.newProject_customRules, {
+    history.push({
+      pathname: formatPath(Paths.newProject_customRules, {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnNext = () => {
-    history.push(
-      formatPath(Paths.newProject_advandedOptions, {
+    history.push({
+      pathname: formatPath(Paths.newProject_advandedOptions, {
         project: match.params.project,
-      })
-    );
+      }),
+      search: location.search,
+    });
   };
 
   const handleOnCancel = () => cancelWizard(history.push);

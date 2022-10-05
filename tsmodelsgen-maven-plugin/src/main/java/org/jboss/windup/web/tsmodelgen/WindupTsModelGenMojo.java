@@ -211,7 +211,6 @@ public class WindupTsModelGenMojo extends AbstractMojo
         {
             Furnace furnace = createAndStartFurnace();
             install("org.jboss.forge.furnace.container:simple," + furnaceVersion, furnace); // :simple instead of :cdi
-            install("org.jboss.forge.addon:core," + forgeVersion, furnace);
             install("org.jboss.windup:windup-tooling," + this.windupCoreVersion, furnace);
             install("org.jboss.windup.rules.apps:windup-rules-java-project," + this.windupCoreVersion, furnace);
             // This addon contains the TsGen service.

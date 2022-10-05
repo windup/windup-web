@@ -9,6 +9,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import java.util.List;
 
 /**
@@ -35,5 +36,5 @@ public interface ConfigurationOptionsEndpoint
      */
     @POST
     @Path(VALIDATE_OPTION)
-    ValidationResult validateOption(AdvancedOption advancedOption);
+    ValidationResult validateOption(@QueryParam("analysisContextId") Long analysisContextId, AdvancedOption advancedOption);
 }
