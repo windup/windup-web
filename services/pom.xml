@@ -146,6 +146,16 @@
             <artifactId>windup-server-provider-spi</artifactId>
             <classifier>forge-addon</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.jboss.windup</groupId>
+            <artifactId>windup-bootstrap-${product-name}</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jboss.windup.rules.apps</groupId>
+                    <artifactId>windup-rules-java-diva</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
         <!-- Rules -->
 
