@@ -25,7 +25,18 @@ export const EAP7: TransformationPathOption = {
   label: "Application server migration to EAP 7",
   description:
     "Upgrade to the latest Release of JBoss EAP or migrate your applications to JBoss EAP from competitors' Enterprise Application server (e.g.Oracle Weblogic Server).",
-  options: "eap7",
+  options: [
+    {
+      label: "JBoss EAP 7",
+      value: "eap7",
+      default: true,
+    },
+    {
+      label: "JBoss EAP 8",
+      value: "eap8",
+      default: false,
+    },
+  ],
   iconSrc: appOnServer,
 };
 
