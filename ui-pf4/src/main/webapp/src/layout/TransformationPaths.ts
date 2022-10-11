@@ -166,11 +166,10 @@ export const MTA_MTR_TRANSFORMATION_PATHS = [
   RH_RUNTIMES,
   OPEN_LIBERTY,
   {
-    label: "Azure",
+    ...AZURE,
     description:
       "Upgrade your Java application so that it can be deployed on Azure App Service.",
     options: "azure-appservice",
-    iconSrc: virtualServer,
   },
   CAMEL,
 ];
