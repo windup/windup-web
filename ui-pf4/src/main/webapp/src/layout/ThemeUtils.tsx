@@ -13,6 +13,14 @@ import mtaFavicon from "images/mta-favicon.png";
 import tackleFavicon from "images/tackle-favicon.png";
 import mtrFavicon from "images/mtr-favicon.png";
 
+import {
+  DEFAULT_TRANSFORMATION_PATHS,
+  MTA_MTR_TRANSFORMATION_PATHS,
+  TransformationPathOption,
+} from "./TransformationPaths";
+
+//
+
 export const PFTheme: "light" | "dark" = "dark";
 
 type ThemeType = "windup" | "mta" | "tackle" | "mtr";
@@ -24,6 +32,7 @@ type ThemeListType = {
     faviconSrc: string;
     websiteURL: string;
     documentationURL: string;
+    transformationPaths: TransformationPathOption[];
   };
 };
 
@@ -35,6 +44,7 @@ const themeList: ThemeListType = {
     faviconSrc: windupFavicon,
     websiteURL: "https://windup.github.io/",
     documentationURL: "https://windup.github.io/",
+    transformationPaths: [...DEFAULT_TRANSFORMATION_PATHS],
   },
   mta: {
     name: "Migration Toolkit for Applications",
@@ -44,6 +54,7 @@ const themeList: ThemeListType = {
     websiteURL: "https://developers.redhat.com/products/mta/overview/",
     documentationURL:
       "https://access.redhat.com/documentation/en-us/migration_toolkit_for_applications/",
+    transformationPaths: [...MTA_MTR_TRANSFORMATION_PATHS],
   },
   tackle: {
     name: "Tackle Analysis",
@@ -52,6 +63,7 @@ const themeList: ThemeListType = {
     faviconSrc: tackleFavicon,
     websiteURL: "https://konveyor.github.io/tackle/",
     documentationURL: "https://konveyor.github.io/tackle/",
+    transformationPaths: [...DEFAULT_TRANSFORMATION_PATHS],
   },
   mtr: {
     name: "Migration Toolkit for Runtimes",
@@ -61,6 +73,7 @@ const themeList: ThemeListType = {
     websiteURL: "https://developers.redhat.com/products/mtr/overview/",
     documentationURL:
       "https://access.redhat.com/documentation/en-us/migration_toolkit_for_runtimes/",
+    transformationPaths: [...MTA_MTR_TRANSFORMATION_PATHS],
   },
 };
 
