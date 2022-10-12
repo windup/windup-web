@@ -33,7 +33,8 @@ public class AdvancedOption implements Serializable
     @NotNull
     private String name;
 
-    @Column(length = 8192)
+    // "value" is a reserved word, hence need to be escaped
+    @Column(name = "\"value\"", length = 8192)
     private String value;
 
     public AdvancedOption() {}

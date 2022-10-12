@@ -18,6 +18,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Type;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
@@ -39,9 +40,11 @@ public class Tag
     private String name;
 
     @Column
+    @Type(type= "yes_no")
     private boolean isRoot;
 
     @Column
+    @Type(type= "yes_no")
     private boolean isPseudo;
 
     @Column
