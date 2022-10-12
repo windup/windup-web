@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -62,6 +63,7 @@ public class MigrationProject implements Serializable
      */
     @Column(nullable = true)
     @ColumnDefault("FALSE")
+    @Type(type= "org.hibernate.type.NumericBooleanType")
     private boolean provisional = true;
 
     @Column(length = 120, unique = false, nullable = false)

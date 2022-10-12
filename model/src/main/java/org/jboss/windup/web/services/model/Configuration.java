@@ -1,6 +1,7 @@
 package org.jboss.windup.web.services.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -48,6 +49,7 @@ public class Configuration implements Serializable
     private Long id;
 
     @Column
+    @Type(type= "org.hibernate.type.NumericBooleanType")
     private boolean global;
 
     @Version

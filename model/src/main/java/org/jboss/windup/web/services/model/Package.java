@@ -2,6 +2,7 @@ package org.jboss.windup.web.services.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -45,6 +46,7 @@ public class Package implements Serializable
     @Column()
     private int countClasses;
 
+    @Type(type= "org.hibernate.type.NumericBooleanType")
     private boolean isKnown;
 
     @ManyToOne()

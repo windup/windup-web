@@ -1,6 +1,7 @@
 package org.jboss.windup.web.services.model;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -36,6 +37,7 @@ public class LabelsPath implements Serializable
     @Column
     @NotNull
     @ColumnDefault("true")
+    @Type(type= "org.hibernate.type.NumericBooleanType")
     private boolean scanRecursively = true;
 
     @Column(length = 2048)

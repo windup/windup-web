@@ -23,6 +23,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Type;
 import org.jboss.windup.web.services.validators.FileExistsConstraint;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -71,6 +72,7 @@ public class RegisteredApplication implements Serializable
      */
     @Column(nullable = false)
     @ColumnDefault("FALSE")
+    @Type(type= "org.hibernate.type.NumericBooleanType")
     private boolean exploded;
 
     @Column(length = 2048)
@@ -91,6 +93,7 @@ public class RegisteredApplication implements Serializable
     private Calendar lastModified;
 
     @Column
+    @Type(type= "org.hibernate.type.NumericBooleanType")
     private boolean isDeleted = false;
 
     public RegisteredApplication()
