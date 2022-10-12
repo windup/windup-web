@@ -154,6 +154,14 @@
                     <groupId>org.jboss.windup.rules.apps</groupId>
                     <artifactId>windup-rules-java-diva</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.windup.rules.apps</groupId>
+                    <artifactId>windup-rules-java-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.jboss.windup</groupId>
+                    <artifactId>windup-tooling-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
