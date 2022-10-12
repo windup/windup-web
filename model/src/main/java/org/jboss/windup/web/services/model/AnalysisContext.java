@@ -66,22 +66,22 @@ public class AnalysisContext implements Serializable
 
     @Column(nullable = false)
     @ColumnDefault("true")
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean generateStaticReports = true;
 
     /*
      * @TODO temporary added for obey single target selection in migration path
      */
     @Column(name = "cloudtargets")
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean cloudTargetsIncluded;
 
     @Column(name = "linuxtargets")
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean linuxTargetsIncluded;
 
     @Column(name = "openjdktargets")
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean openJdkTargetsIncluded;
 
     @JsonIgnore

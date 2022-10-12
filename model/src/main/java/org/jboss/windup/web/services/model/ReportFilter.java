@@ -62,7 +62,7 @@ public class ReportFilter implements Serializable
     private WindupExecution windupExecution;
 
     @Column(nullable = false)
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean isEnabled = false;
 
     public ReportFilter()

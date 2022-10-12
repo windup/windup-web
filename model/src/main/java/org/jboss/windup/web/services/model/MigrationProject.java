@@ -63,7 +63,7 @@ public class MigrationProject implements Serializable
      */
     @Column(nullable = true)
     @ColumnDefault("FALSE")
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean provisional = true;
 
     @Column(length = 120, unique = false, nullable = false)

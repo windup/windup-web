@@ -40,11 +40,11 @@ public class Tag
     private String name;
 
     @Column
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean isRoot;
 
     @Column
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean isPseudo;
 
     @Column

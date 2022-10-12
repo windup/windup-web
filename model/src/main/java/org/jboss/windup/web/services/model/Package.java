@@ -46,7 +46,7 @@ public class Package implements Serializable
     @Column()
     private int countClasses;
 
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean isKnown;
 
     @ManyToOne()

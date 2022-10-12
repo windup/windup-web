@@ -72,7 +72,7 @@ public class RegisteredApplication implements Serializable
      */
     @Column(nullable = false)
     @ColumnDefault("FALSE")
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean exploded;
 
     @Column(length = 2048)
@@ -93,7 +93,7 @@ public class RegisteredApplication implements Serializable
     private Calendar lastModified;
 
     @Column
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean isDeleted = false;
 
     public RegisteredApplication()

@@ -37,7 +37,7 @@ public class LabelsPath implements Serializable
     @Column
     @NotNull
     @ColumnDefault("true")
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean scanRecursively = true;
 
     @Column(length = 2048)

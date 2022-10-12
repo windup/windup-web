@@ -49,7 +49,7 @@ public class Configuration implements Serializable
     private Long id;
 
     @Column
-    @Type(type= "org.hibernate.type.NumericBooleanType")
+    @Type(type= "yes_no")
     private boolean global;
 
     @Version
