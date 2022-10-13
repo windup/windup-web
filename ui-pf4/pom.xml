@@ -260,17 +260,22 @@
                             <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
                         </configuration>
                     </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.coderplus.maven.plugins</groupId>
+                <artifactId>copy-rename-maven-plugin</artifactId>
+                <version>1.0.1</version>
+                <executions>
                     <execution>
-                        <id>yarn run build:freemarker</id>
+                        <id>copy-file</id>
+                        <phase>generate-resources</phase>
                         <goals>
-                            <goal>yarn</goal>
+                            <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <environmentVariables>
-                                <NODE_ENV>production</NODE_ENV>
-                            </environmentVariables>
-                            <arguments>build:freemarker</arguments>
-                            <yarnInheritsProxyConfigFromMaven>false</yarnInheritsProxyConfigFromMaven>
+                            <sourceFile>${project.basedir}/src/main/webapp/build/index.html</sourceFile>
+                            <destinationFile>${project.basedir}/src/main/webapp/build/index.html.ftl</destinationFile>
                         </configuration>
                     </execution>
                 </executions>
