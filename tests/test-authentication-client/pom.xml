@@ -11,12 +11,10 @@
     <artifactId>test-authentication-client</artifactId>
     <name>Windup Web - Test Authentication Client</name>
     <packaging>jar</packaging>
-
     <dependencies>
         <dependency>
-            <groupId>org.keycloak</groupId>
-            <artifactId>keycloak-authz-client</artifactId>
-            <version>${version.keycloak}</version>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
     </dependencies>
 </project>
