@@ -11,7 +11,7 @@
     <properties>
         <!-- No additional args by default -->
         <server.jvm.args>${jvm.debug.args}</server.jvm.args>
-        <version.xnio>3.6.5.Final</version.xnio>
+        <version.xnio>3.8.8.Final</version.xnio>
         <version.wildfly.arquillian>3.0.1.Final</version.wildfly.arquillian>
     </properties>
 
