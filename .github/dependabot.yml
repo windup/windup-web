@@ -1,0 +1,18 @@
+version: 2
+updates:
+  # Maintain dependencies for pom.xml
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "Maven pom.xml"
+      include: "scope"
+  # Maintain dependencies from package.json
+  - package-ecosystem: "npm"
+    directory: "/ui-pf4/src/main/webapp"
+    schedule:
+      interval: "weekly"
+    allow:
+      - dependency-name: "@patternfly/*"
+        dependency-type: "direct"
