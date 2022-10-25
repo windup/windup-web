@@ -65,7 +65,10 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
 
       let result: Package[];
       if (params.get(PACKAGES_QUERYPARAM_NAME) === "true") {
-        result = analysisContext.includePackages;
+        result =
+          analysisContext.includePackages.length > 0
+            ? analysisContext.includePackages
+            : getUnknownPackages(applicationPackages);
       } else {
         if (analysisContext.applications.some((f) => f.exploded)) {
           result = [];
