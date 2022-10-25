@@ -185,6 +185,7 @@ export const Packages: React.FC<PackagesProps> = ({
                 enablePackageSelection={enablePackageSelection}
                 onEnablePackageSelecionChange={(isChecked) => {
                   setEnablePackageSelection(isChecked);
+                  setDirty(true);
                 }}
                 packages={packages || []}
                 selectedPackages={selectedPackages}
