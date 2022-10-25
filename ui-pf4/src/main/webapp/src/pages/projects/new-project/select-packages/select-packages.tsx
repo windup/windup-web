@@ -93,6 +93,12 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
     }
   }, [analysisContext, applicationPackages, getDefaultSelectedPackages]);
 
+  useEffect(() => {
+    if (analysisContext && analysisContext.includePackages.length > 0) {
+      setEnablePackageSelection(true);
+    }
+  }, [analysisContext]);
+
   const handleOnSelectedPackagesChange = (value: string[]) => {
     if (!analysisContext || !packages) {
       return;
