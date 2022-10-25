@@ -30,6 +30,7 @@ const packageToTree = (node: Package): TreeNode => {
 };
 
 export interface PackageDualListProps {
+  isDisabled: boolean;
   packages: Package[];
   includedPackages: string[];
   onChange: (includedPackages: string[]) => void;
@@ -57,6 +58,7 @@ const generateTree = (
 const stringCompartor = (a: string, b: string) => a.localeCompare(b);
 
 export const PackageDualList: React.FC<PackageDualListProps> = ({
+  isDisabled,
   packages,
   includedPackages,
   onChange,
@@ -123,6 +125,7 @@ export const PackageDualList: React.FC<PackageDualListProps> = ({
           listStyle={{
             height: TRANSFER_TREE_HEIGHT + 40, // We need to add the size of the header
           }}
+          disabled={isDisabled}
         >
           {({ direction, onItemSelect, selectedKeys }) => {
             if (direction === "left") {
@@ -157,6 +160,7 @@ export const PackageDualList: React.FC<PackageDualListProps> = ({
                       </small>
                     </span>
                   )}
+                  disabled={isDisabled}
                 />
               );
             }

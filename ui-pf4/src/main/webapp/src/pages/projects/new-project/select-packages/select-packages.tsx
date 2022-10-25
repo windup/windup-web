@@ -53,6 +53,7 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
     loadPackages,
   } = useFetchProjectPackages();
 
+  const [enablePackageSelection, setEnablePackageSelection] = useState(false);
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -134,7 +135,9 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
       .then(({ data }) => {
         const newAnalysisContext: AnalysisContext = {
           ...data,
-          includePackages: fullNameToPackage(selectedPackages, packages),
+          includePackages: enablePackageSelection
+            ? fullNameToPackage(selectedPackages, packages)
+            : [],
         };
         return saveAnalysisContext(project.id, newAnalysisContext, true);
       })
@@ -211,6 +214,11 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
       onGoToStep={handleOnGoToStep}
     >
       <PackageSelection
+        isDirty={dirty}
+        enablePackageSelection={enablePackageSelection}
+        onEnablePackageSelecionChange={(isChecked) => {
+          setEnablePackageSelection(isChecked);
+        }}
         packages={packages || []}
         selectedPackages={selectedPackages}
         onSelectedPackagesChange={handleOnSelectedPackagesChange}

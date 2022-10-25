@@ -16,6 +16,7 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
+  Switch,
 } from "@patternfly/react-core";
 import { UndoIcon, SpinnerIcon } from "@patternfly/react-icons";
 
@@ -29,6 +30,10 @@ export interface PackageSelectionProps {
   onSelectedPackagesChange: (values: string[]) => void;
   onUndo: () => void;
 
+  isDirty: boolean;
+  enablePackageSelection: boolean;
+  onEnablePackageSelecionChange: (isChecked: boolean) => void;
+
   isFetching: boolean;
   isFetchingPlaceholder: any;
   fetchError?: any;
@@ -39,6 +44,11 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
   selectedPackages,
   onSelectedPackagesChange,
   onUndo,
+
+  isDirty,
+  enablePackageSelection,
+  onEnablePackageSelecionChange,
+
   isFetching,
   isFetchingPlaceholder,
   fetchError,
@@ -66,17 +76,30 @@ export const PackageSelection: React.FC<PackageSelectionProps> = ({
                   </Text>
                 </LevelItem>
                 <LevelItem>
-                  <Tooltip content={<div>Restore initial values.</div>}>
-                    <Button variant="plain" aria-label="Undo" onClick={onUndo}>
-                      <UndoIcon /> Undo
-                    </Button>
-                  </Tooltip>
+                  {enablePackageSelection && isDirty && (
+                    <Tooltip content={<div>Restore initial values.</div>}>
+                      <Button
+                        variant="plain"
+                        aria-label="Undo"
+                        onClick={onUndo}
+                      >
+                        <UndoIcon /> Undo
+                      </Button>
+                    </Tooltip>
+                  )}
+                  <Switch
+                    isChecked={enablePackageSelection}
+                    onChange={onEnablePackageSelecionChange}
+                    label="On"
+                    labelOff="Off"
+                  />
                 </LevelItem>
               </Level>
             </TextContent>
           </StackItem>
           <StackItem>
             <PackageDualList
+              isDisabled={!enablePackageSelection}
               packages={packages}
               includedPackages={selectedPackages}
               onChange={onSelectedPackagesChange}
