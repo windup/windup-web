@@ -129,6 +129,11 @@ export const AZURE: TransformationPathOption = {
       value: "azure-aks",
       default: false,
     },
+    {
+      label: "azure-container-apps",
+      value: "azure-container-apps",
+      default: false,
+    },
   ],
   iconSrc: virtualServer,
   isNew: true,
