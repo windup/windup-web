@@ -22,7 +22,7 @@ export interface TransformationPathOption {
 }
 
 export const EAP7: TransformationPathOption = {
-  label: "Application server migration to EAP 7",
+  label: "Application server migration to EAP",
   description:
     "Upgrade to the latest Release of JBoss EAP or migrate your applications to JBoss EAP from competitors' Enterprise Application server (e.g.Oracle Weblogic Server).",
   options: [
