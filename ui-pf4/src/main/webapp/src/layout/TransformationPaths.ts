@@ -150,7 +150,7 @@ export const CAMEL: TransformationPathOption = {
 export const DISCOVERY: TransformationPathOption = {
   label: "Discovery",
   description:
-    "It runs an analysis to just discover the technologies and frameworks used with the application(s).",
+    "It runs an analysis to just discover the technologies and frameworks used within the application(s).",
   options: "discovery",
   iconSrc: search,
   isNew: true,
