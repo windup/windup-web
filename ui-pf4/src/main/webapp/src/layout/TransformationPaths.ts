@@ -5,6 +5,7 @@ import mug from "images/Icon-Red_Hat-Mug-A-Red-RGB.svg";
 import multiply from "images/Icon-Red_Hat-Multiply-A-Red-RGB.svg";
 import server from "images/Icon-Red_Hat-Server-A-Red-RGB.svg";
 import virtualServer from "images/Icon-Red_Hat-Virtual_server_stack-A-Red-RGB.png";
+import search from "images/UI_Icon-Red_Hat-Search-A-Red-RGB.svg";
 
 export interface MultipleOptions {
   label: string;
@@ -146,6 +147,15 @@ export const CAMEL: TransformationPathOption = {
   iconSrc: multiply,
 };
 
+export const DISCOVERY: TransformationPathOption = {
+  label: "Discovery",
+  description:
+    "It runs an analysis to just discover the technologies and frameworks used within the application(s).",
+  options: "discovery",
+  iconSrc: search,
+  isNew: true,
+};
+
 export const DEFAULT_TRANSFORMATION_PATHS = [
   EAP7,
   CONTAINERIZATION,
@@ -158,6 +168,7 @@ export const DEFAULT_TRANSFORMATION_PATHS = [
   OPEN_LIBERTY,
   AZURE,
   CAMEL,
+  DISCOVERY,
 ];
 
 export const MTA_MTR_TRANSFORMATION_PATHS = [
@@ -177,4 +188,5 @@ export const MTA_MTR_TRANSFORMATION_PATHS = [
     options: "azure-appservice",
   },
   CAMEL,
+  DISCOVERY,
 ];
