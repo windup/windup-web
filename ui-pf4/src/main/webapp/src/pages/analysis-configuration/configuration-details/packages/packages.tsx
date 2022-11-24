@@ -30,6 +30,7 @@ import {
   arePackagesEquals,
   fullNameToPackage,
   getAxiosErrorMessage,
+  getUnknownPackages,
 } from "utils/modelUtils";
 
 import {
@@ -58,6 +59,7 @@ export const Packages: React.FC<PackagesProps> = ({
     loadPackages,
   } = useFetchProjectPackages();
 
+  const [enablePackageSelection, setEnablePackageSelection] = useState(false);
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -71,11 +73,19 @@ export const Packages: React.FC<PackagesProps> = ({
 
   useEffect(() => {
     if (analysisContext && applicationPackages) {
-      setSelectedPackages(
-        analysisContext.includePackages.map((f) => f.fullName)
-      );
+      let newSelectedPackages = analysisContext.includePackages;
+      if (newSelectedPackages.length === 0) {
+        newSelectedPackages = getUnknownPackages(applicationPackages);
+      }
+      setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
     }
   }, [analysisContext, applicationPackages]);
+
+  useEffect(() => {
+    if (analysisContext && analysisContext.includePackages.length > 0) {
+      setEnablePackageSelection(true);
+    }
+  }, [analysisContext]);
 
   const handleOnSelectedPackagesChange = (value: string[]) => {
     if (!analysisContext || !packages) {
@@ -96,8 +106,13 @@ export const Packages: React.FC<PackagesProps> = ({
       return;
     }
 
+    const defaultPackages =
+      analysisContext.includePackages.length > 0
+        ? analysisContext.includePackages
+        : getUnknownPackages(applicationPackages || []);
+
     setDirty(false);
-    setSelectedPackages(analysisContext.includePackages.map((f) => f.fullName));
+    setSelectedPackages(defaultPackages.map((f) => f.fullName));
   };
 
   const onSubmit = (runAnalysis: boolean) => {
@@ -110,7 +125,9 @@ export const Packages: React.FC<PackagesProps> = ({
       .then(({ data }) => {
         const newAnalysisContext: AnalysisContext = {
           ...data,
-          includePackages: fullNameToPackage(selectedPackages, packages),
+          includePackages: enablePackageSelection
+            ? fullNameToPackage(selectedPackages, packages)
+            : [],
         };
         return saveAnalysisContext(project.id, newAnalysisContext, false);
       })
@@ -164,6 +181,12 @@ export const Packages: React.FC<PackagesProps> = ({
           <Card>
             <CardBody>
               <PackageSelection
+                isDirty={dirty}
+                enablePackageSelection={enablePackageSelection}
+                onEnablePackageSelecionChange={(isChecked) => {
+                  setEnablePackageSelection(isChecked);
+                  setDirty(true);
+                }}
                 packages={packages || []}
                 selectedPackages={selectedPackages}
                 onSelectedPackagesChange={handleOnSelectedPackagesChange}

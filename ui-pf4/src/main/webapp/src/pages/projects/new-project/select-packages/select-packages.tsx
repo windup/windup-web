@@ -53,6 +53,7 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
     loadPackages,
   } = useFetchProjectPackages();
 
+  const [enablePackageSelection, setEnablePackageSelection] = useState(false);
   const [selectedPackages, setSelectedPackages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -64,7 +65,10 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
 
       let result: Package[];
       if (params.get(PACKAGES_QUERYPARAM_NAME) === "true") {
-        result = analysisContext.includePackages;
+        result =
+          analysisContext.includePackages.length > 0
+            ? analysisContext.includePackages
+            : getUnknownPackages(applicationPackages);
       } else {
         if (analysisContext.applications.some((f) => f.exploded)) {
           result = [];
@@ -91,6 +95,12 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
       setSelectedPackages(newSelectedPackages.map((f) => f.fullName));
     }
   }, [analysisContext, applicationPackages, getDefaultSelectedPackages]);
+
+  useEffect(() => {
+    if (analysisContext && analysisContext.includePackages.length > 0) {
+      setEnablePackageSelection(true);
+    }
+  }, [analysisContext]);
 
   const handleOnSelectedPackagesChange = (value: string[]) => {
     if (!analysisContext || !packages) {
@@ -134,7 +144,9 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
       .then(({ data }) => {
         const newAnalysisContext: AnalysisContext = {
           ...data,
-          includePackages: fullNameToPackage(selectedPackages, packages),
+          includePackages: enablePackageSelection
+            ? fullNameToPackage(selectedPackages, packages)
+            : [],
         };
         return saveAnalysisContext(project.id, newAnalysisContext, true);
       })
@@ -211,6 +223,11 @@ export const SelectPackages: React.FC<SelectPackagesProps> = ({
       onGoToStep={handleOnGoToStep}
     >
       <PackageSelection
+        isDirty={dirty}
+        enablePackageSelection={enablePackageSelection}
+        onEnablePackageSelecionChange={(isChecked) => {
+          setEnablePackageSelection(isChecked);
+        }}
         packages={packages || []}
         selectedPackages={selectedPackages}
         onSelectedPackagesChange={handleOnSelectedPackagesChange}
