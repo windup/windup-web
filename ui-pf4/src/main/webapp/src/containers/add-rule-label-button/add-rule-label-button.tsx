@@ -16,6 +16,7 @@ export interface AddRuleLabelButtonProps {
   type: RuleLabel;
   projectId?: number | string;
   uploadToGlobal: boolean;
+  isDisabled?: boolean;
   onModalClose: () => void;
 }
 
@@ -23,6 +24,7 @@ export const AddRuleLabelButton: React.FC<AddRuleLabelButtonProps> = ({
   type,
   projectId,
   uploadToGlobal,
+  isDisabled,
   onModalClose,
 }) => {
   const dispatch = useDispatch();
@@ -48,7 +50,11 @@ export const AddRuleLabelButton: React.FC<AddRuleLabelButtonProps> = ({
 
   return (
     <>
-      <Button type="button" onClick={handleOnModalToggle}>
+      <Button
+        type="button"
+        onClick={handleOnModalToggle}
+        isDisabled={isDisabled}
+      >
         Add {`${type.toLocaleLowerCase()}`}
       </Button>
       <Modal
