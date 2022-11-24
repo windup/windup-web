@@ -18,6 +18,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Type;
 
 /**
  * @author <a href="mailto:dklingenberg@gmail.com">David Klingenberg</a>
@@ -61,6 +62,7 @@ public class ReportFilter implements Serializable
     private WindupExecution windupExecution;
 
     @Column(nullable = false)
+    @Type(type= "yes_no")
     private boolean isEnabled = false;
 
     public ReportFilter()

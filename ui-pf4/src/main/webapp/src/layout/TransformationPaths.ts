@@ -5,6 +5,7 @@ import mug from "images/Icon-Red_Hat-Mug-A-Red-RGB.svg";
 import multiply from "images/Icon-Red_Hat-Multiply-A-Red-RGB.svg";
 import server from "images/Icon-Red_Hat-Server-A-Red-RGB.svg";
 import virtualServer from "images/Icon-Red_Hat-Virtual_server_stack-A-Red-RGB.png";
+import search from "images/UI_Icon-Red_Hat-Search-A-Red-RGB.svg";
 
 export interface MultipleOptions {
   label: string;
@@ -22,7 +23,7 @@ export interface TransformationPathOption {
 }
 
 export const EAP7: TransformationPathOption = {
-  label: "Application server migration to EAP 7",
+  label: "Application server migration to EAP",
   description:
     "Upgrade to the latest Release of JBoss EAP or migrate your applications to JBoss EAP from competitors' Enterprise Application server (e.g.Oracle Weblogic Server).",
   options: [
@@ -129,6 +130,11 @@ export const AZURE: TransformationPathOption = {
       value: "azure-aks",
       default: false,
     },
+    {
+      label: "azure-container-apps",
+      value: "azure-container-apps",
+      default: false,
+    },
   ],
   iconSrc: virtualServer,
   isNew: true,
@@ -139,6 +145,15 @@ export const CAMEL: TransformationPathOption = {
   description: "Rules for the migration from Apache Camel 2 to Apache Camel 3.",
   options: "camel",
   iconSrc: multiply,
+};
+
+export const DISCOVERY: TransformationPathOption = {
+  label: "Discovery",
+  description:
+    "It runs an analysis to just discover the technologies and frameworks used within the application(s).",
+  options: "discovery",
+  iconSrc: search,
+  isNew: true,
 };
 
 export const DEFAULT_TRANSFORMATION_PATHS = [
@@ -153,6 +168,7 @@ export const DEFAULT_TRANSFORMATION_PATHS = [
   OPEN_LIBERTY,
   AZURE,
   CAMEL,
+  DISCOVERY,
 ];
 
 export const MTA_MTR_TRANSFORMATION_PATHS = [
@@ -172,4 +188,5 @@ export const MTA_MTR_TRANSFORMATION_PATHS = [
     options: "azure-appservice",
   },
   CAMEL,
+  DISCOVERY,
 ];
