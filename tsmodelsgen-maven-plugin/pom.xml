@@ -10,7 +10,7 @@
 
     <groupId>org.jboss.windup.web.plugin</groupId>
     <artifactId>windup-tsmodelsgen-maven-plugin</artifactId>
-    <version>6.0.1-SNAPSHOT</version>
+    <version>6.2.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
 
     <name>Windup Web - TS Model Generator Maven Plugin</name>
@@ -29,8 +29,8 @@
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
 
-        <version.windup.core>6.0.1-SNAPSHOT</version.windup.core>
-        <version.windup.ruleset>6.0.1-SNAPSHOT</version.windup.ruleset>
+        <version.windup.core>6.2.0-SNAPSHOT</version.windup.core>
+        <version.windup.ruleset>6.2.0-SNAPSHOT</version.windup.ruleset>
         <!-- this property is used in the code too, DO NOT REMOVE IT! -->
         <version.windup.web>${project.version}</version.windup.web>
         <!-- For now, we need to pass this to the Mojo explicitly (through META-INF/versions.properties),
@@ -128,6 +128,12 @@
             <groupId>org.jboss.windup.graph</groupId>
             <artifactId>windup-graph-impl</artifactId>
             <version>${version.windup.core}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jboss.windup.rules.apps</groupId>
@@ -163,6 +169,16 @@
             <groupId>org.jboss.forge.addon</groupId>
             <artifactId>core</artifactId>
             <classifier>forge-addon</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>dom4j</groupId>
+                    <artifactId>dom4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
         </dependency>
     </dependencies>
 

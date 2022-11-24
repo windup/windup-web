@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Type;
 
 /**
  * Contains the path to a Rules directory.
@@ -45,6 +46,7 @@ public class RulesPath implements Serializable
     @Column
     @NotNull
     @ColumnDefault("true")
+    @Type(type= "yes_no")
     private boolean scanRecursively = true;
 
     @Column(length = 2048)

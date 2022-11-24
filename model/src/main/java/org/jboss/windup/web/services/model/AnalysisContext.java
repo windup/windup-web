@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Type;
 
 /**
  * Contains information about how Windup analysis should be configured.
@@ -65,18 +66,22 @@ public class AnalysisContext implements Serializable
 
     @Column(nullable = false)
     @ColumnDefault("true")
+    @Type(type= "yes_no")
     private boolean generateStaticReports = true;
 
     /*
      * @TODO temporary added for obey single target selection in migration path
      */
     @Column(name = "cloudtargets")
+    @Type(type= "yes_no")
     private boolean cloudTargetsIncluded;
 
     @Column(name = "linuxtargets")
+    @Type(type= "yes_no")
     private boolean linuxTargetsIncluded;
 
     @Column(name = "openjdktargets")
+    @Type(type= "yes_no")
     private boolean openJdkTargetsIncluded;
 
     @JsonIgnore
