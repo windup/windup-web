@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { AxiosError } from "axios";
 
 import {
@@ -12,6 +13,7 @@ import {
   ToolbarItem,
   Switch,
   Bullseye,
+  Button,
 } from "@patternfly/react-core";
 import {
   ICell,
@@ -37,8 +39,13 @@ import { useShowRuleLabelDetails } from "hooks/useShowRuleLabelDetails";
 import { useDispatch } from "react-redux";
 import { alertActions } from "store/alert";
 
+import { formatPath, Paths } from "Paths";
 import { getAlertModel } from "Constants";
-import { getAnalysisContext, saveAnalysisContext } from "api/api";
+import {
+  createProjectExecution,
+  getAnalysisContext,
+  saveAnalysisContext,
+} from "api/api";
 import { RulesPath, RuleProviderEntity } from "models/api";
 import {
   getAxiosErrorMessage,
@@ -85,6 +92,8 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
   projectId,
   skipChangeToProvisional,
 }) => {
+  const history = useHistory();
+
   const dispatch = useDispatch();
   const deleteRule = useDeleteRule();
   const showRuleLabelDetails = useShowRuleLabelDetails();
@@ -133,6 +142,35 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
       setIsRulePathChecked(newCheckedValue);
     }
   }, [analysisContext, rulesPath]);
+
+  // Analysis
+
+  const onRunAnalysis = () => {
+    if (!project || project.provisional) {
+      return;
+    }
+
+    setIsAnalysisContextBeingSaved(true);
+    getAnalysisContext(project.defaultAnalysisContextId)
+      .then(({ data }) => {
+        return createProjectExecution(projectId, data);
+      })
+      .then(() => {
+        history.push(
+          formatPath(Paths.executions, {
+            project: projectId,
+          })
+        );
+      })
+      .catch((error: AxiosError) => {
+        setIsAnalysisContextBeingSaved(false);
+        dispatch(
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
+        );
+      });
+  };
 
   //
 
@@ -333,9 +371,21 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
                     type="Rule"
                     projectId={projectId}
                     uploadToGlobal={false}
+                    isDisabled={areActionsDisabled()}
                     onModalClose={handleOnRuleLabelClose}
                   />
                 </ToolbarItem>
+                {project && !project.provisional && (
+                  <ToolbarItem>
+                    <Button
+                      variant="secondary"
+                      onClick={onRunAnalysis}
+                      isDisabled={areActionsDisabled()}
+                    >
+                      Run analysis
+                    </Button>
+                  </ToolbarItem>
+                )}
               </ToolbarGroup>
             }
             emptyState={
