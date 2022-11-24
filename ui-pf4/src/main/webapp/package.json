@@ -23,6 +23,7 @@
     "formik": "^2.1.5",
     "humanize-duration-ts": "^2.1.1",
     "keycloak-js": "18.0.1",
+    "minimatch": "3.0.5",
     "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
