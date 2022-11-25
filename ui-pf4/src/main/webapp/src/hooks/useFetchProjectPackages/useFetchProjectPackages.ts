@@ -114,7 +114,7 @@ const disaggregatePackages = (
   }
 };
 
-export interface ISelectionState<T> {
+export interface ISelectionState {
   project?: MigrationProject;
   analysisContext?: AnalysisContext;
   packages?: Package[];
@@ -125,7 +125,7 @@ export interface ISelectionState<T> {
   loadPackages: (projectId: string | number) => void;
 }
 
-export const useFetchProjectPackages = <T>(): ISelectionState<T> => {
+export const useFetchProjectPackages = (): ISelectionState => {
   const [project, setProject] = useState<MigrationProject>();
   const [analysisContext, setAnalysisContext] = useState<AnalysisContext>();
 
