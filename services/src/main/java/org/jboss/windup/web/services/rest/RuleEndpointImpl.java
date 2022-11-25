@@ -101,7 +101,7 @@ public class RuleEndpointImpl implements RuleEndpoint
             customRulesPath = this.webPathUtil.getCustomRulesPath(projectId.toString());
         }
 
-        File file = this.fileUploadService.uploadFile(data, customRulesPath, fileName, true);
+        File file = this.fileUploadService.uploadFile(data, customRulesPath, fileName, false);
 
         ScopeType scopeType = configuration.isGlobal() ? ScopeType.GLOBAL : ScopeType.PROJECT;
         RulesPath rulesPathEntity = new RulesPath(file.getPath(), PathType.USER_PROVIDED, scopeType, RegistrationType.UPLOADED);
