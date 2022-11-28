@@ -6,7 +6,7 @@
   "homepage": "./",
   "dependencies": {
     "@patternfly/patternfly": "4.183.1",
-    "@patternfly/react-core": "4.198.19",
+    "@patternfly/react-core": "4.264.0",
     "@patternfly/react-table": "4.67.19",
     "@react-keycloak/web": "3.4.0",
     "@redhat-cloud-services/frontend-components-notifications": "2.2.2",
