@@ -23,7 +23,6 @@
     "formik": "^2.1.5",
     "humanize-duration-ts": "^2.1.1",
     "keycloak-js": "18.0.1",
-    "minimatch": "3.0.8",
     "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -40,6 +39,10 @@
     "typescript": "~3.9.7",
     "websocket": "^1.0.32",
     "yup": "^0.29.3"
+  },
+  "resolutions": {
+    "minimatch": "3.0.8",
+    "loader-utils": "1.4.2"
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
