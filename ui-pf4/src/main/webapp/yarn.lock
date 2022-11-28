@@ -1725,10 +1725,10 @@
   dependencies:
     mkdirp "^1.0.4"
 
-"@patternfly/patternfly@4.183.1":
-  version "4.183.1"
-  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.183.1.tgz#717ae0f5614605369f0a26bf17d99b993f6f449a"
-  integrity sha512-XJZIG/kcEbIPI/0Q6+Q5ax2m295IpQCppertUQ4RfOSkvJVfjQ4CUNmR/ycgjlGm1DItmYJe/NqVFerNlvzUeg==
+"@patternfly/patternfly@4.221.2":
+  version "4.221.2"
+  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.221.2.tgz#cab6bae47bb5fcf658438fccd9113875fcb45392"
+  integrity sha512-4R35CKnZJY6/sN6vzYaAwkEaYWIo2IZv4y2s39ZNh4QkK1pBTWmH6URUYOxNhc5qrU9MjFNdMCNepBciM3SugQ==
 
 "@patternfly/react-core@4.198.19", "@patternfly/react-core@^4.198.19":
   version "4.198.19"
