@@ -92,7 +92,7 @@ public class LabelEndpointImpl implements LabelEndpoint
             customLabelsPath = this.webPathUtil.getCustomLabelsPath(projectId.toString());
         }
 
-        File file = this.fileUploadService.uploadFile(data, customLabelsPath, fileName, true);
+        File file = this.fileUploadService.uploadFile(data, customLabelsPath, fileName, false);
 
         ScopeType scopeType = configuration.isGlobal() ? ScopeType.GLOBAL : ScopeType.PROJECT;
         LabelsPath labelsPathEntity = new LabelsPath(file.getPath(), PathType.USER_PROVIDED, scopeType, RegistrationType.UPLOADED);
