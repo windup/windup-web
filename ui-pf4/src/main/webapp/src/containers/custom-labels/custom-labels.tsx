@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { AxiosError } from "axios";
 
 import {
@@ -12,6 +13,7 @@ import {
   ToolbarItem,
   Switch,
   Bullseye,
+  Button,
 } from "@patternfly/react-core";
 import {
   ICell,
@@ -37,8 +39,13 @@ import { useShowRuleLabelDetails } from "hooks/useShowRuleLabelDetails";
 import { useDispatch } from "react-redux";
 import { alertActions } from "store/alert";
 
+import { formatPath, Paths } from "Paths";
 import { getAlertModel } from "Constants";
-import { getAnalysisContext, saveAnalysisContext } from "api/api";
+import {
+  createProjectExecution,
+  getAnalysisContext,
+  saveAnalysisContext,
+} from "api/api";
 import { LabelsPath, LabelProviderEntity } from "models/api";
 import {
   getAxiosErrorMessage,
@@ -86,6 +93,8 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
   projectId,
   skipChangeToProvisional,
 }) => {
+  const history = useHistory();
+
   const dispatch = useDispatch();
   const deleteLabel = useDeleteLabel();
   const showRuleLabelDetails = useShowRuleLabelDetails();
@@ -111,11 +120,70 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
     loadLabels(projectId);
   }, [projectId, loadProject, loadLabels]);
 
+  // Switch checked state
+  const [
+    isAnalysisContextBeingSaved,
+    setIsAnalysisContextBeingSaved,
+  ] = useState(false);
+
+  const [isLabelPathChecked, setIsLabelPathChecked] = useState(
+    new Map<number, boolean>()
+  );
+
+  useEffect(() => {
+    if (analysisContext && labelsPath) {
+      const newCheckedValue = new Map<number, boolean>();
+      labelsPath.forEach((item) => {
+        newCheckedValue.set(
+          item.id,
+          !!analysisContext.labelsPaths.find((f) => f.id === item.id)
+        );
+      });
+      setIsLabelPathChecked(newCheckedValue);
+    }
+  }, [analysisContext, labelsPath]);
+
+  // Analysis
+
+  const onRunAnalysis = () => {
+    if (!project || project.provisional) {
+      return;
+    }
+
+    setIsAnalysisContextBeingSaved(true);
+    getAnalysisContext(project.defaultAnalysisContextId)
+      .then(({ data }) => {
+        return createProjectExecution(projectId, data);
+      })
+      .then(() => {
+        history.push(
+          formatPath(Paths.executions, {
+            project: projectId,
+          })
+        );
+      })
+      .catch((error: AxiosError) => {
+        setIsAnalysisContextBeingSaved(false);
+        dispatch(
+          alertActions.alert(
+            getAlertModel("danger", "Error", getAxiosErrorMessage(error))
+          )
+        );
+      });
+  };
+
+  //
+
   const handleLabelPathToggled = useCallback(
     (isChecked: boolean, labelPathToggled: LabelsPath) => {
       if (!project) {
         return;
       }
+
+      setIsLabelPathChecked(
+        new Map(isLabelPathChecked).set(labelPathToggled.id, isChecked)
+      );
+      setIsAnalysisContextBeingSaved(true);
 
       getAnalysisContext(project.defaultAnalysisContextId)
         .then(({ data }) => {
@@ -147,9 +215,18 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
               getAlertModel("danger", "Error", getAxiosErrorMessage(error))
             )
           );
+        })
+        .finally(() => {
+          setIsAnalysisContextBeingSaved(false);
         });
     },
-    [project, skipChangeToProvisional, loadProject, dispatch]
+    [
+      project,
+      isLabelPathChecked,
+      skipChangeToProvisional,
+      loadProject,
+      dispatch,
+    ]
   );
 
   const actionResolver = (rowData: IRowData): (IAction | ISeparator)[] => {
@@ -182,7 +259,7 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
   };
 
   const areActionsDisabled = (): boolean => {
-    return false;
+    return isFetchingProject || isFetchingLabels || isAnalysisContextBeingSaved;
   };
 
   const getRowLabelPathField = (rowData: IRowData): LabelsPath => {
@@ -220,14 +297,20 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
             {
               title: (
                 <Switch
-                  aria-label="Enabled"
-                  isChecked={
-                    !!analysisContext?.labelsPaths.find((f) => f.id === item.id)
+                  aria-label={
+                    isLabelPathChecked.get(item.id) ? "Enabled" : "Disabled"
                   }
+                  isChecked={isLabelPathChecked.get(item.id)}
                   onChange={(isChecked) =>
                     handleLabelPathToggled(isChecked, item)
                   }
-                  isDisabled={errors.length > 0 || numberOfLabels === 0}
+                  isDisabled={
+                    isFetchingProject ||
+                    isFetchingLabels ||
+                    isAnalysisContextBeingSaved ||
+                    errors.length > 0 ||
+                    numberOfLabels === 0
+                  }
                 />
               ),
             },
@@ -235,7 +318,14 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
         };
       });
     },
-    [analysisContext, labelProviders, handleLabelPathToggled]
+    [
+      labelProviders,
+      isAnalysisContextBeingSaved,
+      isFetchingProject,
+      isFetchingLabels,
+      isLabelPathChecked,
+      handleLabelPathToggled,
+    ]
   );
 
   const handleOnLabelLabelClose = () => {
@@ -275,9 +365,21 @@ export const CustomLabels: React.FC<CustomLabelsProps> = ({
                     type="Label"
                     projectId={projectId}
                     uploadToGlobal={false}
+                    isDisabled={areActionsDisabled()}
                     onModalClose={handleOnLabelLabelClose}
                   />
                 </ToolbarItem>
+                {project && !project.provisional && (
+                  <ToolbarItem>
+                    <Button
+                      variant="secondary"
+                      onClick={onRunAnalysis}
+                      isDisabled={areActionsDisabled()}
+                    >
+                      Run analysis
+                    </Button>
+                  </ToolbarItem>
+                )}
               </ToolbarGroup>
             }
             emptyState={
