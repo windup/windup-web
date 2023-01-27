@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, RouteComponentProps } from "react-router-dom";
-import { mount, shallow } from "enzyme";
+import { render, screen } from '@testing-library/react';
 import { AxiosError } from "axios";
 
 import { Button, Skeleton } from "@patternfly/react-core";
@@ -171,8 +171,8 @@ describe("ProjectList", () => {
   );
 
   it("Render 'loading' first time", () => {
-    const wrapper = mount(getWrapper());
-    expect(wrapper.find(AppPlaceholder).length).toEqual(1);
+    const wrapper = render(getWrapper());
+    expect(wrapper.getByRole('heading')).toHaveTextContent("Loading...");
   });
 
   it("Renders welcome", () => {
@@ -182,8 +182,8 @@ describe("ProjectList", () => {
       error: undefined,
     };
 
-    const wrapper = mount(getWrapper(defaultState));
-    expect(wrapper.find(Welcome).length).toEqual(1);
+    const wrapper = render(getWrapper(defaultState));
+    expect(wrapper.getByRole('heading')).toHaveTextContent("Welcome to Windup");
   });
 
   it("Renders error", () => {
@@ -194,8 +194,8 @@ describe("ProjectList", () => {
       error: error,
     };
 
-    const wrapper = mount(getWrapper(defaultState));
-    expect(wrapper.find(FetchErrorEmptyState).length).toEqual(1);
+    const wrapper = render(getWrapper(defaultState));
+    expect(wrapper.getByRole('heading', {level: 2})).toHaveTextContent("Unable to connect");
   });
 
   it("Test click 'Create project'", () => {
@@ -205,8 +205,8 @@ describe("ProjectList", () => {
       error: undefined,
     };
 
-    const wrapper = mount(getWrapper(defaultState));
-    wrapper.find(Button).simulate("click");
+    const wrapper = render(getWrapper(defaultState));
+    wrapper.getByText('Create project', { selector: 'button' }).click();
     expect(historyPushMock.mock.calls.length).toEqual(1);
   });
 
@@ -233,8 +233,8 @@ describe("ProjectList", () => {
       error: undefined,
     };
 
-    const wrapper = mount(getWrapper(defaultState));
-    expect(wrapper.find(Skeleton).length).toBeGreaterThan(1);
+    const wrapper = render(getWrapper(defaultState));
+    expect(wrapper.container.getElementsByClassName('pf-c-skeleton').length).toBeGreaterThan(1);
   });
 
   // it("Renders table content", () => {

@@ -32,8 +32,8 @@ export class KeycloakWrapper extends React.Component<
             if (keycloak.token) {
               keycloak
                 .updateToken(5)
-                .success(() => resolve(keycloak.token))
-                .error(() => reject("Failed to refresh token"));
+                .then(() => resolve(keycloak.token!))
+                .catch(() => reject("Failed to refresh token"));
             } else {
               keycloak.login();
               reject("Not logged in");
