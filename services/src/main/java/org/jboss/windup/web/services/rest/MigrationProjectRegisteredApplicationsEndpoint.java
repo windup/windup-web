@@ -45,6 +45,7 @@ public interface MigrationProjectRegisteredApplicationsEndpoint
 
     @Path("register-path")
     @POST
+    @Consumes("text/plain")
     RegisteredApplication registerApplicationByPath(@PathParam("projectId") long projectId, @QueryParam("exploded") Boolean exploded, String path);
 
     /**
@@ -52,6 +53,7 @@ public interface MigrationProjectRegisteredApplicationsEndpoint
      */
     @Path("register-directory-path")
     @POST
+    @Consumes("text/plain")
     Collection<RegisteredApplication> registerApplicationsInDirectoryByPath(@PathParam("projectId") long projectId, String directoryPath);
 
     /**

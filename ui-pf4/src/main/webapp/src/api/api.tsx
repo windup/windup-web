@@ -132,7 +132,13 @@ export const registerApplicationByPath = (
   return ApiClient.post<Application>(
     `${MIGRATION_PROJECTS_PATH}/${projectId}/registeredApplications/register-path?exploded=${isPathExploded}`,
     path,
-    defaultConfig
+    {
+      ...defaultConfig,
+      headers: {
+        ...defaultConfig.headers,
+        "Content-Type": "text/plain",
+      },
+    }
   );
 };
 
@@ -143,7 +149,13 @@ export const registerApplicationInDirectoryByPath = (
   return ApiClient.post<Application>(
     `${MIGRATION_PROJECTS_PATH}/${projectId}/registeredApplications/register-directory-path`,
     path,
-    defaultConfig
+    {
+      ...defaultConfig,
+      headers: {
+        ...defaultConfig.headers,
+        "Content-Type": "text/plain",
+      },
+    }
   );
 };
 
