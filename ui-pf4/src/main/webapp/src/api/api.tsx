@@ -148,17 +148,25 @@ export const registerApplicationInDirectoryByPath = (
 };
 
 export const pathExists = (path: string): AxiosPromise<boolean> => {
-  return ApiClient.post<boolean>("file/pathExists", path, defaultConfig);
+  return ApiClient.post<boolean>("file/pathExists", path, {
+    ...defaultConfig,
+    headers: {
+      ...defaultConfig.headers,
+      "Content-Type": "text/plain",
+    },
+  });
 };
 
 export const pathTargetType = (
   path: string
 ): AxiosPromise<"FILE" | "DIRECTORY"> => {
-  return ApiClient.post<"FILE" | "DIRECTORY">(
-    "file/pathTargetType",
-    path,
-    defaultConfig
-  );
+  return ApiClient.post<"FILE" | "DIRECTORY">("file/pathTargetType", path, {
+    ...defaultConfig,
+    headers: {
+      ...defaultConfig.headers,
+      "Content-Type": "text/plain",
+    },
+  });
 };
 
 export const getAnalysisContext = (

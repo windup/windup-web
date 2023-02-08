@@ -13,7 +13,7 @@ import javax.ws.rs.QueryParam;
  * @author <a href="mailto:jesse.sightler@gmail.com">Jesse Sightler</a>
  */
 @Path("/file")
-@Consumes("application/json")
+@Consumes("text/plain")
 @Produces("application/json")
 public interface FileEndpoint
 {
