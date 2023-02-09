@@ -132,7 +132,13 @@ export const registerApplicationByPath = (
   return ApiClient.post<Application>(
     `${MIGRATION_PROJECTS_PATH}/${projectId}/registeredApplications/register-path?exploded=${isPathExploded}`,
     path,
-    defaultConfig
+    {
+      ...defaultConfig,
+      headers: {
+        ...defaultConfig.headers,
+        "Content-Type": "text/plain",
+      },
+    }
   );
 };
 
@@ -143,22 +149,36 @@ export const registerApplicationInDirectoryByPath = (
   return ApiClient.post<Application>(
     `${MIGRATION_PROJECTS_PATH}/${projectId}/registeredApplications/register-directory-path`,
     path,
-    defaultConfig
+    {
+      ...defaultConfig,
+      headers: {
+        ...defaultConfig.headers,
+        "Content-Type": "text/plain",
+      },
+    }
   );
 };
 
 export const pathExists = (path: string): AxiosPromise<boolean> => {
-  return ApiClient.post<boolean>("file/pathExists", path, defaultConfig);
+  return ApiClient.post<boolean>("file/pathExists", path, {
+    ...defaultConfig,
+    headers: {
+      ...defaultConfig.headers,
+      "Content-Type": "text/plain",
+    },
+  });
 };
 
 export const pathTargetType = (
   path: string
 ): AxiosPromise<"FILE" | "DIRECTORY"> => {
-  return ApiClient.post<"FILE" | "DIRECTORY">(
-    "file/pathTargetType",
-    path,
-    defaultConfig
-  );
+  return ApiClient.post<"FILE" | "DIRECTORY">("file/pathTargetType", path, {
+    ...defaultConfig,
+    headers: {
+      ...defaultConfig.headers,
+      "Content-Type": "text/plain",
+    },
+  });
 };
 
 export const getAnalysisContext = (
