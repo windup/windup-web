@@ -39,6 +39,7 @@
         <version.hibernate>5.3.20.Final</version.hibernate>
         <version.undertow>2.2.5.Final</version.undertow>
         <version.httpcomponents>4.5.13</version.httpcomponents>
+        <version.maven-war-plugin>3.3.2</version.maven-war-plugin>
     </properties>
 
     <scm>
