@@ -22,7 +22,11 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           java-package: jdk
-          cache: 'maven'
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-windup-build-${{ github.sha }}
       - name: Build Windup on JDK 11
         run: mvn -B clean install -DskipTests
 
@@ -41,7 +45,13 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           java-package: jdk
-          cache: 'maven'
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-windup-rulesets-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-maven-windup-build-${{ github.sha }}
       - name: Build Windup Rulesets
         run: mvn -B clean install -DskipTests
 
@@ -60,7 +70,13 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           java-package: jdk
-          cache: 'maven'
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-windup-cli-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-maven-windup-rulesets-build-${{ github.sha }}
       - name: Build on JDK 11
         run: mvn -B clean install -DskipTests
 
@@ -77,7 +93,13 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           java-package: jdk
-          cache: 'maven'
+      - name: Cache local Maven repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-windup-web-build-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-maven-windup-cli-build-${{ github.sha }}
       - uses: actions/setup-node@v2
         with:
           node-version: '12'
