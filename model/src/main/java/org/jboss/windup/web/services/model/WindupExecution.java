@@ -193,7 +193,7 @@ public class WindupExecution implements Serializable
         if (directoryName == null)
             return null;
 
-        return directoryName + "/index.html";
+        return directoryName + "/pf-reports/index.html";
     }
 
     /**
