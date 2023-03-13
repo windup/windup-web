@@ -109,11 +109,13 @@ const compareExecution = (
 
 const filterExecution = (filterText: string, execution: WindupExecution) => {
   return (
-    execution.id.toString().toLowerCase().indexOf(filterText.toLowerCase()) !==
-      -1 ||
+    execution.id
+      .toString()
+      .toLowerCase()
+      .indexOf(filterText.trim().toLowerCase()) !== -1 ||
     mapStateToLabel(execution.state)
       .toLocaleLowerCase()
-      .indexOf(filterText.toLowerCase()) !== -1
+      .indexOf(filterText.trim().toLowerCase()) !== -1
   );
 };
 
