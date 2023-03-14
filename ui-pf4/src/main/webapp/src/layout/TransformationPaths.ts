@@ -81,7 +81,6 @@ export const OPENJDK: TransformationPathOption = {
     },
   ],
   iconSrc: mug,
-  isNew: true,
 };
 
 export const LINUX: TransformationPathOption = {
@@ -137,7 +136,6 @@ export const AZURE: TransformationPathOption = {
     },
   ],
   iconSrc: virtualServer,
-  isNew: true,
 };
 
 export const CAMEL: TransformationPathOption = {
