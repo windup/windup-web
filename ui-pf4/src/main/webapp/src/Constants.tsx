@@ -68,6 +68,7 @@ export enum AdvancedOptionsFieldKey {
   EXPLODED_APP = "explodedApp",
   KEEP_WORK_DIRS = "keepWorkDirs",
   SKIP_REPORTS = "skipReports",
+  SKIP_SOURCE_CODE_REPORTS = "skipSourceCodeReports",
   ALLOW_NETWORK_ACCESS = "online",
   MAVENIZE = "mavenize",
   SOURCE_MODE = "sourceMode",
