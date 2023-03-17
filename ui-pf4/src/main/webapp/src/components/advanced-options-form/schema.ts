@@ -151,6 +151,13 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
     },
   ],
   [
+    AdvancedOptionsFieldKey.SKIP_SOURCE_CODE_REPORTS,
+    {
+      label: "Skip source code reports",
+      type: "switch",
+    },
+  ],
+  [
     AdvancedOptionsFieldKey.ALLOW_NETWORK_ACCESS,
     {
       label: "Allow network access",
