@@ -54,6 +54,7 @@ interface FormValues {
   [AdvancedOptionsFieldKey.EXPLODED_APP]?: boolean;
   [AdvancedOptionsFieldKey.KEEP_WORK_DIRS]?: boolean;
   [AdvancedOptionsFieldKey.SKIP_REPORTS]?: boolean;
+  [AdvancedOptionsFieldKey.SKIP_SOURCE_CODE_REPORTS]?: boolean;
   [AdvancedOptionsFieldKey.ALLOW_NETWORK_ACCESS]?: boolean;
   [AdvancedOptionsFieldKey.MAVENIZE]?: boolean;
   [AdvancedOptionsFieldKey.SOURCE_MODE]?: boolean;
