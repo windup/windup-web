@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import org.jboss.windup.config.KeepWorkDirsOption;
 import org.jboss.windup.config.phase.ReportRenderingPhase;
+import org.jboss.windup.exec.Util;
 import org.jboss.windup.exec.WindupProcessor;
 import org.jboss.windup.exec.WindupProgressMonitor;
 import org.jboss.windup.exec.configuration.WindupConfiguration;
@@ -139,6 +140,7 @@ public class WindupExecutorServiceImpl implements WindupExecutorService
         finally
         {
             graphCache.closeGraph(graphPath);
+            Util.deleteGraphDataUnlessInhibited(configuration, graphPath);
             logHandler.flush();
             globalLogger.removeHandler(logHandler);
         }
