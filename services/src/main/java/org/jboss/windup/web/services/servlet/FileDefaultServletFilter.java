@@ -25,18 +25,22 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 /**
  * When user requests static report files:
- * 'static-report/{reportNumber}/pf-reports/settings.js' or 'static-report/{reportNumber}/pf-reports/windup.js'
- * then redirect request to 'static-report/{reportNumber}/pf-reports/settings.js.ejs' or 'static-report/{reportNumber}/pf-reports/windup.js.ejs'
+ * 'static-report/{reportNumber}/settings.js' or 'static-report/{reportNumber}/windup.js'
+ * then redirect request to 'static-report/{reportNumber}/settings.js.ejs' or 'static-report/{reportNumber}/windup.js.ejs'
  * <p>
- * When user requests 'static-report/{reportNumber}/pf-reports/api/*'
- * then redirect request to 'static-report/{reportNumber}/pf-reports/api/*.json'
+ * When user requests 'static-report/{reportNumber}/api/*'
+ * then redirect request to 'static-report/{reportNumber}/api/*.json'
  */
 public class FileDefaultServletFilter implements Filter {
 
-    private static final String BASE_PATH = "/pf-reports";
+//    public static final Pattern staticReportApi = Pattern.compile("\\/static-report\\/[0-9]\\/api\\/\\w+.json$");
+    public static final Pattern staticSettingsJS = Pattern.compile("\\/windup-ui\\/api\\/static-report\\/[0-9]\\/settings\\.js");
+    public static final Pattern staticWindupJS = Pattern.compile("\\/windup-ui\\/api\\/static-report\\/[0-9]\\/windup\\.js");
+    public static final Pattern staticReportApi = Pattern.compile("\\/windup-ui\\/api\\/static-report\\/[0-9]\\/api\\/.+$");
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -45,10 +49,10 @@ public class FileDefaultServletFilter implements Filter {
 
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-        if (requestURI.endsWith(BASE_PATH + "/settings.js") || requestURI.endsWith(BASE_PATH + "/windup.js")) {
+        if (staticSettingsJS.matcher(requestURI).matches() || staticWindupJS.matcher(requestURI).matches()) {
             String newURI = requestURI.concat(".ejs");
             httpResponse.sendRedirect(newURI);
-        } else if (requestURI.contains(BASE_PATH + "/api/") && !requestURI.endsWith(".json")) {
+        } else if (staticReportApi.matcher(requestURI).matches() && !requestURI.endsWith(".json")) {
             String newURI = requestURI.concat(".json");
             httpResponse.sendRedirect(newURI);
         } else {
