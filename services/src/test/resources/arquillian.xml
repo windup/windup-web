@@ -10,9 +10,9 @@
 
     <container qualifier="jbossas-managed" default="true">
         <configuration>
-            <property name="jbossHome">target/wildfly-${wildfly.version}</property>
+            <property name="jbossHome">target/server-dist</property>
             <property name="serverConfig">standalone-full.xml</property>
-            <property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true -Djboss.socket.binding.port-offset=100 -Djboss.node.name=windup-test-node ${server.jvm.args}</property>
+            <property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true -Djboss.socket.binding.port-offset=100 -Djboss.node.name=windup-test-node --add-modules=java.se --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.stream=ALL-UNNAMED --add-opens=java.base/sun.util.calendar=ALL-UNNAMED ${server.jvm.args}</property>
             <!--
             <property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true -Djboss.socket.binding.port-offset=100</property>
             <property name="javaVmArguments">-Xms64m -Xmx2048m -Dorg.jboss.resolver.warning=true -Djboss.socket.binding.port-offset=100 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y</property>

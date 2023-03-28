@@ -19,7 +19,6 @@
         <extension module="org.jboss.as.pojo"/>
         <extension module="org.jboss.as.remoting"/>
         <extension module="org.jboss.as.sar"/>
-        <extension module="org.jboss.as.security"/>
         <extension module="org.jboss.as.transactions"/>
         <extension module="org.jboss.as.webservices"/>
         <extension module="org.jboss.as.weld"/>
@@ -35,9 +34,6 @@
         <extension module="org.wildfly.extension.io"/>
         <extension module="org.wildfly.extension.messaging-activemq"/>
         <extension module="org.wildfly.extension.metrics"/>
-        <extension module="org.wildfly.extension.microprofile.config-smallrye"/>
-        <extension module="org.wildfly.extension.microprofile.jwt-smallrye"/>
-        <extension module="org.wildfly.extension.microprofile.opentracing-smallrye"/>
         <extension module="org.wildfly.extension.request-controller"/>
         <extension module="org.wildfly.extension.security.manager"/>
         <extension module="org.wildfly.extension.undertow"/>
@@ -47,31 +43,7 @@
         <property name="windup.secured.url" value="none"/>
     </system-properties>
     <management>
-        <security-realms>
-            <security-realm name="ManagementRealm">
-                <authentication>
-                    <local default-user="$local" skip-group-loading="true"/>
-                    <properties path="mgmt-users.properties" relative-to="jboss.server.config.dir"/>
-                </authentication>
-                <authorization map-groups-to-roles="false">
-                    <properties path="mgmt-groups.properties" relative-to="jboss.server.config.dir"/>
-                </authorization>
-            </security-realm>
-            <security-realm name="ApplicationRealm">
-                <server-identities>
-                    <ssl>
-                        <keystore path="application.keystore" relative-to="jboss.server.config.dir" keystore-password="password" alias="server" key-password="password" generate-self-signed-certificate-host="localhost"/>
-                    </ssl>
-                </server-identities>
-                <authentication>
-                    <local default-user="$local" allowed-users="*" skip-group-loading="true"/>
-                    <properties path="application-users.properties" relative-to="jboss.server.config.dir"/>
-                </authentication>
-                <authorization>
-                    <properties path="application-roles.properties" relative-to="jboss.server.config.dir"/>
-                </authorization>
-            </security-realm>
-        </security-realms>
+        <identity security-domain="ManagementDomain"/>
         <audit-log>
             <formatters>
                 <json-formatter name="json-formatter"/>
@@ -86,8 +58,8 @@
             </logger>
         </audit-log>
         <management-interfaces>
-            <http-interface security-realm="ManagementRealm">
-                <http-upgrade enabled="true"/>
+            <http-interface http-authentication-factory="management-http-authentication">
+                <http-upgrade enabled="true" sasl-authentication-factory="management-sasl-authentication"/>
                 <socket-binding http="management-http"/>
             </http-interface>
         </management-interfaces>
@@ -146,6 +118,7 @@
         <subsystem xmlns="urn:jboss:domain:batch-jberet:2.0">
             <default-job-repository name="in-memory"/>
             <default-thread-pool name="batch"/>
+            <security-domain name="ApplicationDomain"/>
             <job-repository name="in-memory">
                 <in-memory/>
             </job-repository>
@@ -251,6 +224,9 @@
             </thread-pools>
             <iiop enable-by-default="false" use-qualified-name="false"/>
             <default-security-domain value="other"/>
+            <application-security-domains>
+                <application-security-domain name="other" security-domain="KeycloakDomain"/>
+            </application-security-domains>
             <default-missing-method-permissions-deny-access value="true"/>
             <statistics enabled="${wildfly.ejb3.statistics-enabled:${wildfly.statistics-enabled:false}}"/>
             <log-system-exceptions value="true"/>
@@ -276,8 +252,12 @@
                     <realm name="ManagementRealm" role-decoder="groups-to-roles"/>
                     <realm name="local" role-mapper="super-user-mapper"/>
                 </security-domain>
+                <security-domain name="KeycloakDomain" default-realm="KeycloakOIDCRealm" permission-mapper="default-permission-mapper" security-event-listener="local-audit">
+                    <realm name="KeycloakOIDCRealm"/>
+                </security-domain>
             </security-domains>
             <security-realms>
+                <custom-realm name="KeycloakOIDCRealm" module="org.keycloak.keycloak-wildfly-elytron-oidc-adapter" class-name="org.keycloak.adapters.elytron.KeycloakSecurityRealm"/>
                 <identity-realm name="local" identity="$local"/>
                 <properties-realm name="ApplicationRealm">
                     <users-properties path="application-users.properties" relative-to="jboss.server.config.dir" digest-realm-name="ApplicationRealm"/>
@@ -300,6 +280,7 @@
                     </permission-mapping>
                 </simple-permission-mapper>
                 <constant-realm-mapper name="local" realm-name="local"/>
+                <constant-realm-mapper name="keycloak-oidc-realm-mapper" realm-name="KeycloakOIDCRealm"/>
                 <simple-role-decoder name="groups-to-roles" attribute="groups"/>
                 <constant-role-mapper name="super-user-mapper">
                     <role name="SuperUser"/>
@@ -323,7 +304,26 @@
                         </mechanism>
                     </mechanism-configuration>
                 </http-authentication-factory>
+                <http-authentication-factory name="keycloak-http-authentication" security-domain="KeycloakDomain" http-server-mechanism-factory="keycloak-http-server-mechanism-factory">
+                    <mechanism-configuration>
+                        <mechanism mechanism-name="KEYCLOAK">
+                            <mechanism-realm realm-name="KeycloakOIDCRealm" realm-mapper="keycloak-oidc-realm-mapper"/>
+                        </mechanism>
+                    </mechanism-configuration>
+                </http-authentication-factory>
+                <http-authentication-factory name="application-http-authentication" security-domain="ApplicationDomain" http-server-mechanism-factory="global">
+                    <mechanism-configuration>
+                        <mechanism mechanism-name="BASIC">
+                            <mechanism-realm realm-name="ApplicationRealm"/>
+                        </mechanism>
+                    </mechanism-configuration>
+                </http-authentication-factory>
+                <aggregate-http-server-mechanism-factory name="keycloak-http-server-mechanism-factory">
+                    <http-server-mechanism-factory name="keycloak-oidc-http-server-mechanism-factory"/>
+                    <http-server-mechanism-factory name="global"/>
+                </aggregate-http-server-mechanism-factory>
                 <provider-http-server-mechanism-factory name="global"/>
+                <service-loader-http-server-mechanism-factory name="keycloak-oidc-http-server-mechanism-factory" module="org.keycloak.keycloak-wildfly-elytron-oidc-adapter"/>
             </http>
             <sasl>
                 <sasl-authentication-factory name="application-sasl-authentication" sasl-server-factory="configured" security-domain="ApplicationDomain">
@@ -345,6 +345,7 @@
                 <configurable-sasl-server-factory name="configured" sasl-server-factory="elytron">
                     <properties>
                         <property name="wildfly.sasl.local-user.default-user" value="$local"/>
+                        <property name="wildfly.sasl.local-user.challenge-path" value="${jboss.server.temp.dir}/auth"/>
                     </properties>
                 </configurable-sasl-server-factory>
                 <mechanism-provider-filtering-sasl-server-factory name="elytron" sasl-server-factory="global">
@@ -451,6 +452,7 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:messaging-activemq:13.0">
             <server name="default">
+                <security elytron-domain="ApplicationDomain"/>
                 <statistics enabled="${wildfly.messaging-activemq.statistics-enabled:${wildfly.statistics-enabled:false}}"/>
                 <security-setting name="#">
                     <role name="guest" send="true" consume="true" create-non-durable-queue="true" delete-non-durable-queue="true"/>
@@ -482,61 +484,17 @@
                 <pooled-connection-factory name="activemq-ra" entries="java:/JmsXA java:jboss/DefaultJMSConnectionFactory" connectors="in-vm" transaction="xa"/>
             </server>
         </subsystem>
-        <subsystem xmlns="urn:wildfly:metrics:1.0" security-enabled="false" exposed-subsystems="*" prefix="${wildfly.metrics.prefix:wildfly}"/>
-        <subsystem xmlns="urn:wildfly:microprofile-config-smallrye:1.0"/>
-        <subsystem xmlns="urn:wildfly:microprofile-jwt-smallrye:1.0"/>
-<!--        <subsystem xmlns="urn:wildfly:microprofile-opentracing-smallrye:3.0" default-tracer="jaeger">-->
-<!--            <jaeger-tracer name="jaeger">-->
-<!--                <sampler-configuration sampler-type="const" sampler-param="1.0"/>-->
-<!--            </jaeger-tracer>-->
-<!--        </subsystem>-->
+        <subsystem xmlns="urn:wildfly:metrics:1.0" security-enabled="false" exposed-subsystems="*" prefix="${wildfly.metrics.prefix:jboss}"/>
         <subsystem xmlns="urn:jboss:domain:naming:2.0">
             <remote-naming/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:pojo:1.0"/>
         <subsystem xmlns="urn:jboss:domain:remoting:4.0">
-            <http-connector name="http-remoting-connector" connector-ref="default" security-realm="ApplicationRealm"/>
+            <http-connector name="http-remoting-connector" connector-ref="default" sasl-authentication-factory="application-sasl-authentication"/>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:request-controller:1.0"/>
         <subsystem xmlns="urn:jboss:domain:resource-adapters:6.0"/>
         <subsystem xmlns="urn:jboss:domain:sar:1.0"/>
-        <subsystem xmlns="urn:jboss:domain:security:2.0">
-            <security-domains>
-                <security-domain name="other" cache-type="default">
-                    <authentication>
-                        <login-module code="Remoting" flag="optional">
-                            <module-option name="password-stacking" value="useFirstPass"/>
-                        </login-module>
-                        <login-module code="RealmDirect" flag="required">
-                            <module-option name="password-stacking" value="useFirstPass"/>
-                        </login-module>
-                    </authentication>
-                </security-domain>
-                <security-domain name="jboss-web-policy" cache-type="default">
-                    <authorization>
-                        <policy-module code="Delegating" flag="required"/>
-                    </authorization>
-                </security-domain>
-                <security-domain name="jaspitest" cache-type="default">
-                    <authentication-jaspi>
-                        <login-module-stack name="dummy">
-                            <login-module code="Dummy" flag="optional"/>
-                        </login-module-stack>
-                        <auth-module code="Dummy"/>
-                    </authentication-jaspi>
-                </security-domain>
-                <security-domain name="jboss-ejb-policy" cache-type="default">
-                    <authorization>
-                        <policy-module code="Delegating" flag="required"/>
-                    </authorization>
-                </security-domain>
-                <security-domain name="keycloak">
-                    <authentication>
-                        <login-module code="org.keycloak.adapters.jboss.KeycloakLoginModule" flag="required"/>
-                    </authentication>
-                </security-domain>
-            </security-domains>
-        </subsystem>
         <subsystem xmlns="urn:jboss:domain:security-manager:1.0">
             <deployment-permissions>
                 <maximum-set>
@@ -545,7 +503,7 @@
             </deployment-permissions>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:transactions:6.0">
-            <core-environment node-identifier="${jboss.tx.node.id:1}">
+            <core-environment node-identifier="a">
                 <process-id>
                     <uuid/>
                 </process-id>
@@ -557,11 +515,11 @@
         <subsystem xmlns="urn:jboss:domain:undertow:12.0" default-server="default-server" default-virtual-host="default-host" default-servlet-container="default" default-security-domain="other" statistics-enabled="${wildfly.undertow.statistics-enabled:${wildfly.statistics-enabled:false}}">
             <buffer-cache name="default"/>
             <server name="default-server">
-                <http-listener name="default" socket-binding="http" redirect-socket="https" enable-http2="true"/>
-                <https-listener name="https" socket-binding="https" security-realm="ApplicationRealm" enable-http2="true"/>
+                <http-listener name="default" socket-binding="http" max-post-size="943718400" redirect-socket="https" enable-http2="true"/>
+                <https-listener name="https" socket-binding="https" ssl-context="applicationSSC" enable-http2="true"/>
                 <host name="default-host" alias="localhost">
                     <location name="/" handler="welcome-content"/>
-                    <http-invoker security-realm="ApplicationRealm"/>
+                    <http-invoker http-authentication-factory="application-http-authentication"/>
                 </host>
             </server>
             <servlet-container name="default">
@@ -571,6 +529,9 @@
             <handlers>
                 <file name="welcome-content" path="${jboss.home.dir}/welcome-content"/>
             </handlers>
+            <application-security-domains>
+                <application-security-domain name="other" http-authentication-factory="keycloak-http-authentication"/>
+            </application-security-domains>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:webservices:2.0" statistics-enabled="${wildfly.webservices.statistics-enabled:${wildfly.statistics-enabled:false}}">
             <wsdl-host>${jboss.bind.address:127.0.0.1}</wsdl-host>

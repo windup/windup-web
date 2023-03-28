@@ -27,9 +27,16 @@
         <version.windup>6.2.0-SNAPSHOT</version.windup>
         <version.windup.cli>6.2.0-SNAPSHOT</version.windup.cli>
         <version.keycloak>18.0.2</version.keycloak>
+        <wildfly.groupId>org.wildfly</wildfly.groupId>
+        <wildfly.artifactId>wildfly-dist</wildfly.artifactId>
         <version.wildfly>23.0.2.Final</version.wildfly>
         <version.resteasy>3.15.1.Final</version.resteasy>
         <version.jboss.javaee>1.0.1.Final</version.jboss.javaee>
+
+        <wildfly-dist.groupId>${wildfly.groupId}</wildfly-dist.groupId>
+        <wildfly-dist.artifactId>${wildfly.artifactId}</wildfly-dist.artifactId>
+        <version.wildfly-dist>${version.wildfly}</version.wildfly-dist>
+        <wildfly-dist.content-zip-name>wildfly-${version.wildfly}</wildfly-dist.content-zip-name>
 
         <windup.web.scm.connection>scm:git:https://github.com/windup/windup-web.git</windup.web.scm.connection>
         <windup.web.developer.connection>scm:git:git@github.com:windup/windup-web.git</windup.web.developer.connection>
@@ -256,16 +263,6 @@
 
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <argLine>-Xms512m -Xmx2048m -XX:MaxPermSize=768m -XX:ReservedCodeCacheSize=128m</argLine>
-                </configuration>
-            </plugin>
-        </plugins>
-
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -365,6 +362,52 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <profile>
+            <id>surefire-jdk11</id>
+            <activation>
+                <jdk>11</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>-Xms512m -Xmx2048m -XX:ReservedCodeCacheSize=128m</argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>surefire-jdk17</id>
+            <activation>
+                <jdk>17</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>-Xms512m -Xmx2048m -XX:ReservedCodeCacheSize=128m --add-modules java.se --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+                            <reuseForks>false</reuseForks>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>eap</id>
+            <properties>
+                <wildfly-dist.groupId>jboss-eap</wildfly-dist.groupId>
+                <wildfly-dist.artifactId>jboss-eap-dist</wildfly-dist.artifactId>
+                <version.wildfly-dist>7.4.9.GA</version.wildfly-dist>
+                <wildfly-dist.content-zip-name>jboss-eap-7.4</wildfly-dist.content-zip-name>
+            </properties>
         </profile>
 
         <profile>
