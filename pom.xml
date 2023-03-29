@@ -401,16 +401,6 @@
         </profile>
 
         <profile>
-            <id>eap</id>
-            <properties>
-                <wildfly-dist.groupId>jboss-eap</wildfly-dist.groupId>
-                <wildfly-dist.artifactId>jboss-eap-dist</wildfly-dist.artifactId>
-                <version.wildfly-dist>7.4.9.GA</version.wildfly-dist>
-                <wildfly-dist.content-zip-name>jboss-eap-7.4</wildfly-dist.content-zip-name>
-            </properties>
-        </profile>
-
-        <profile>
             <id>windup</id>
             <activation>
                 <property>
