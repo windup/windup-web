@@ -8,6 +8,15 @@
         <param-value>org.jboss.resteasy.plugins.stats.RegistryStatsResource</param-value>
     </context-param>
 
+    <filter>
+        <filter-name>FileServletFilter</filter-name>
+        <filter-class>org.jboss.windup.web.services.servlet.FileDefaultServletFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>FileServletFilter</filter-name>
+        <url-pattern>/static-report/*</url-pattern>
+    </filter-mapping>
+
     <servlet>
         <description>Serves static files.</description>
         <servlet-name>FileServlet</servlet-name>

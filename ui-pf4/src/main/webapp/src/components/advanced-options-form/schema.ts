@@ -194,6 +194,13 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
       type: "switch",
     },
   ],
+  [
+    AdvancedOptionsFieldKey.LEGACY_REPORTS,
+    {
+      label: "Legacy reports",
+      type: "switch",
+    },
+  ],
 ]);
 
 // Schema
