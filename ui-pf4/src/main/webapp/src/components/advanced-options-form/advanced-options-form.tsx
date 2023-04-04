@@ -60,6 +60,7 @@ interface FormValues {
   [AdvancedOptionsFieldKey.SOURCE_MODE]?: boolean;
   [AdvancedOptionsFieldKey.ANALYZE_KNOWN_LIBRARIES]?: boolean;
   [AdvancedOptionsFieldKey.TRANSTRACTION_ANALYSIS]?: boolean;
+  [AdvancedOptionsFieldKey.LEGACY_REPORTS]?: boolean;
 }
 
 export interface AdvancedOptionsFormProps

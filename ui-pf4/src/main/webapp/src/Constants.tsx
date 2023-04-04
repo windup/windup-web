@@ -74,6 +74,7 @@ export enum AdvancedOptionsFieldKey {
   SOURCE_MODE = "sourceMode",
   ANALYZE_KNOWN_LIBRARIES = "analyzeKnownLibraries",
   TRANSTRACTION_ANALYSIS = "enableTransactionAnalysis",
+  LEGACY_REPORTS = "legacyReports",
 }
 
 //
