@@ -41,6 +41,7 @@
     </extensions>
     <system-properties>
         <property name="windup.secured.url" value="none"/>
+        <property name="org.apache.james.mime4j.defaultStorageProvider" value="org.apache.james.mime4j.storage.TempFileStorageProvider"/>
     </system-properties>
     <management>
         <identity security-domain="ManagementDomain"/>
