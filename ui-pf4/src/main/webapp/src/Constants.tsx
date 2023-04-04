@@ -22,6 +22,7 @@ export const WINDUP_ENV_VARIABLES: WindupEnv = (window as any)[
 ];
 
 export const MERGED_CSV_FILENAME = "AllIssues.csv";
+export const ZIP_REPORT_FILENAME = "reports.zip";
 
 export const getWindupRestBase = () => {
   let base = packageJson.proxy + API_BASE_URL; // Development
@@ -62,6 +63,7 @@ export enum AdvancedOptionsFieldKey {
 
   // Switch
   EXPORT_CSV = "exportCSV",
+  EXPORT_ZIP_REPORT = "exportZipReport",
   TATTLETALE = "disableTattletale",
   CLASS_NOT_FOUND_ANALYSIS = "enableClassNotFoundAnalysis",
   COMPATIBLE_FILES_REPORT = "enableCompatibleFilesReport",

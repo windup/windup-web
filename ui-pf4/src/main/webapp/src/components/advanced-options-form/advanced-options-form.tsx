@@ -48,6 +48,7 @@ interface FormValues {
   [AdvancedOptionsFieldKey.IGNORE_PATH]?: string;
 
   [AdvancedOptionsFieldKey.EXPORT_CSV]?: boolean;
+  [AdvancedOptionsFieldKey.EXPORT_ZIP_REPORT]?: boolean;
   [AdvancedOptionsFieldKey.TATTLETALE]?: boolean;
   [AdvancedOptionsFieldKey.CLASS_NOT_FOUND_ANALYSIS]?: boolean;
   [AdvancedOptionsFieldKey.COMPATIBLE_FILES_REPORT]?: boolean;
