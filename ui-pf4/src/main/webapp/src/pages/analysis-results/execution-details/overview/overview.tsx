@@ -17,12 +17,17 @@ import {
   List,
   ListItem,
 } from "@patternfly/react-core";
-import { ChartBarIcon, DownloadIcon } from "@patternfly/react-icons";
+import {
+  ChartBarIcon,
+  DownloadIcon,
+  FileArchiveIcon,
+} from "@patternfly/react-icons";
 
 import {
   AdvancedOptionsFieldKey,
   getWindupStaticReportsBase,
   MERGED_CSV_FILENAME,
+  ZIP_REPORT_FILENAME,
 } from "Constants";
 import {
   ExecutionStatusWithTime,
@@ -159,6 +164,23 @@ export const Overview: React.FC<OverviewProps> = ({ match }) => {
                                         }/${MERGED_CSV_FILENAME}`}
                                       >
                                         <DownloadIcon /> All issues CSV
+                                      </a>
+                                    </StackItem>
+                                  )}
+                                  {isOptionEnabledInExecution(
+                                    execution,
+                                    AdvancedOptionsFieldKey.EXPORT_ZIP_REPORT
+                                  ) && (
+                                    <StackItem>
+                                      <a
+                                        title="Download ZIP report"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        href={`${getWindupStaticReportsBase()}/${
+                                          execution.id
+                                        }/${ZIP_REPORT_FILENAME}`}
+                                      >
+                                        <FileArchiveIcon /> ZIP report
                                       </a>
                                     </StackItem>
                                   )}

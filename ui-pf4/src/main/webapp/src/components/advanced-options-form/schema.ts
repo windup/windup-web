@@ -107,6 +107,13 @@ export const Fields: Map<AdvancedOptionsFieldKey, IFieldInfo> = new Map([
     },
   ],
   [
+    AdvancedOptionsFieldKey.EXPORT_ZIP_REPORT,
+    {
+      label: "Export ZIP report",
+      type: "switch",
+    },
+  ],
+  [
     AdvancedOptionsFieldKey.TATTLETALE,
     {
       label: "Disable Tattletale",

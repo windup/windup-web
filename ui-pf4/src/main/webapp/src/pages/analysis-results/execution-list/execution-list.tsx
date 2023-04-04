@@ -26,6 +26,7 @@ import {
   DownloadIcon,
   CubesIcon,
   TrashIcon,
+  FileArchiveIcon,
 } from "@patternfly/react-icons";
 
 import { RootState } from "store/rootReducer";
@@ -62,6 +63,7 @@ import {
   AdvancedOptionsFieldKey,
   getWindupStaticReportsBase,
   MERGED_CSV_FILENAME,
+  ZIP_REPORT_FILENAME,
 } from "Constants";
 import { isNullOrUndefined } from "utils/utils";
 import {
@@ -129,6 +131,12 @@ const getCSVReportURL = (execution: WindupExecution) => {
   return `${getWindupStaticReportsBase()}/${
     execution.id
   }/${MERGED_CSV_FILENAME}`;
+};
+
+const getZIPReportURL = (execution: WindupExecution) => {
+  return `${getWindupStaticReportsBase()}/${
+    execution.id
+  }/${ZIP_REPORT_FILENAME}`;
 };
 
 interface ExecutionListProps extends RouteComponentProps<ProjectRoute> {}
@@ -369,6 +377,22 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                           className="pf-c-button pf-m-link"
                         >
                           <DownloadIcon />
+                        </a>
+                      </FlexItem>
+                    )}
+                    {isOptionEnabledInExecution(
+                      item,
+                      AdvancedOptionsFieldKey.EXPORT_ZIP_REPORT
+                    ) && (
+                      <FlexItem>
+                        <a
+                          title="Download ZIP repot"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          href={`${getZIPReportURL(item)}`}
+                          className="pf-c-button pf-m-link"
+                        >
+                          <FileArchiveIcon />
                         </a>
                       </FlexItem>
                     )}
