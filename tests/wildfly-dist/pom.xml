@@ -30,9 +30,9 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>${wildfly-dist.groupId}</groupId>
-                                    <artifactId>${wildfly-dist.artifactId}</artifactId>
-                                    <version>${version.wildfly-dist}</version>
+                                    <groupId>${wildfly.groupId}</groupId>
+                                    <artifactId>${wildfly.artifactId}</artifactId>
+                                    <version>${version.wildfly}</version>
                                     <type>zip</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${basedir}/target/classes</outputDirectory>
@@ -63,7 +63,7 @@
                         </goals>
                         <configuration>
                             <target>
-                                <move file="${project.build.directory}/classes/${wildfly-dist.content-zip-name}" tofile="${project.build.directory}/classes/server-dist" />
+                                <move file="${project.build.directory}/classes/${wildfly.directory}" tofile="${project.build.directory}/classes/server-dist" />
                             </target>
                         </configuration>
                     </execution>
