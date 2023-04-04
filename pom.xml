@@ -34,7 +34,6 @@
         <version.resteasy>3.15.1.Final</version.resteasy>
         <version.jboss.javaee>1.0.1.Final</version.jboss.javaee>
 
-
         <windup.web.scm.connection>scm:git:https://github.com/windup/windup-web.git</windup.web.scm.connection>
         <windup.web.developer.connection>scm:git:git@github.com:windup/windup-web.git</windup.web.developer.connection>
         <windup.web.scm.url>http://github.com/windup/windup-web</windup.web.scm.url>
