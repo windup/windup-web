@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <properties>
-        <wildfly.outputdirectory>${basedir}/target/classes/wildfly-${version.wildfly}/</wildfly.outputdirectory>
+        <wildfly.outputdirectory>${basedir}/target/classes/server-dist/</wildfly.outputdirectory>
     </properties>
 
     <parent>
@@ -30,8 +30,8 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>org.wildfly</groupId>
-                                    <artifactId>wildfly-dist</artifactId>
+                                    <groupId>${wildfly.groupId}</groupId>
+                                    <artifactId>${wildfly.artifactId}</artifactId>
                                     <version>${version.wildfly}</version>
                                     <type>zip</type>
                                     <overWrite>false</overWrite>
@@ -46,6 +46,25 @@
                                     <outputDirectory>${wildfly.outputdirectory}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>rename-windup-dist</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <move file="${project.build.directory}/classes/${wildfly.directory}" tofile="${project.build.directory}/classes/server-dist" />
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
