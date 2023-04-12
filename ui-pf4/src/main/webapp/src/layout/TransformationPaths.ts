@@ -120,14 +120,9 @@ export const AZURE: TransformationPathOption = {
     "Upgrade your Java application so it can be deployed in different flavors of Azure.",
   options: [
     {
-        label: "azure-spring-apps",
-        value: "azure-spring-apps",
-        default: true,
-      },
-    {
       label: "azure-appservice",
       value: "azure-appservice",
-      default: false,
+      default: true,
     },
     {
       label: "azure-aks",
@@ -137,6 +132,11 @@ export const AZURE: TransformationPathOption = {
     {
       label: "azure-container-apps",
       value: "azure-container-apps",
+      default: false,
+    },
+    {
+      label: "azure-spring-apps",
+      value: "azure-spring-apps",
       default: false,
     },
   ],
