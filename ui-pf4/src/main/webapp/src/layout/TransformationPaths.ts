@@ -134,6 +134,11 @@ export const AZURE: TransformationPathOption = {
       value: "azure-container-apps",
       default: false,
     },
+    {
+      label: "azure-spring-apps",
+      value: "azure-spring-apps",
+      default: false,
+    },
   ],
   iconSrc: virtualServer,
 };
