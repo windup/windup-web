@@ -386,7 +386,7 @@ export const ExecutionList: React.FC<ExecutionListProps> = ({ match }) => {
                     ) && (
                       <FlexItem>
                         <a
-                          title="Download ZIP repot"
+                          title="Download ZIP report"
                           target="_blank"
                           rel="noopener noreferrer"
                           href={`${getZIPReportURL(item)}`}
