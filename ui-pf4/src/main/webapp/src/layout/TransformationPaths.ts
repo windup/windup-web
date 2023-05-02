@@ -101,7 +101,7 @@ export const JAKARTA9: TransformationPathOption = {
 export const RH_RUNTIMES: TransformationPathOption = {
   label: "Spring Boot on Red Hat Runtimes",
   description:
-    "A set of rules for assessing the compatibility of applications against versions of Spring Boot libraries suported by Red Hat Runtimes.",
+    "A set of rules for assessing the compatibility of applications against versions of Spring Boot libraries supported by Red Hat Runtimes.",
   options: "rhr",
   iconSrc: migration,
 };
