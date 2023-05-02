@@ -2,7 +2,7 @@ package org.jboss.windup.web.services;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.junit.Assert;
 
 import java.io.File;
@@ -17,8 +17,7 @@ public class ServiceTestUtil
 
     public static ResteasyClient getResteasyClient()
     {
-        return new ResteasyClientBuilder()
-                    .build();
+        return new ResteasyClientBuilderImpl().build();
     }
 
     public static void assertFileExists(String path)
