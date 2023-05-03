@@ -33,7 +33,7 @@
         <wildfly.directory>wildfly-${version.wildfly}</wildfly.directory>
         <version.jackson>2.13.4</version.jackson>
         <version.jackson.databind>2.13.4.2</version.jackson.databind>
-        <version.resteasy>4.7.8.Final</version.resteasy>
+        <version.resteasy>6.2.3.Final</version.resteasy>
         <version.jboss.javaee>1.0.1.Final</version.jboss.javaee>
 
         <windup.web.scm.connection>scm:git:https://github.com/windup/windup-web.git</windup.web.scm.connection>
