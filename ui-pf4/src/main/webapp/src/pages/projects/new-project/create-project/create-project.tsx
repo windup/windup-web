@@ -115,6 +115,7 @@ export const CreateProject: React.FC<CreateProjectProps> = ({
     validationSchema: projectDetailsFormSchema(project),
     onSubmit: handleOnSubmit,
     initialErrors: !project ? { name: "" } : {},
+    validateOnBlur: false,
   });
 
   const handleOnGoToStep = (newStep: NewProjectWizardStepIds) => {

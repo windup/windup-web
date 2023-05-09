@@ -115,6 +115,7 @@ export const AddApplicationButton: React.FC<AddApplicationButtonProps> = ({
     validationSchema: AddApplicationsUploadFilesFormSchema(false),
     onSubmit: handleUploadFilesFormikSubmit,
     // initialErrors: { applications: "" },
+    validateOnBlur: false,
   });
 
   const serverPathFormik = useFormik({
@@ -124,6 +125,7 @@ export const AddApplicationButton: React.FC<AddApplicationButtonProps> = ({
     ),
     onSubmit: handleServerPathFormikSubmit,
     initialErrors: { serverPath: "" },
+    validateOnBlur: false,
   });
 
   const handleOnTabChange = (selected: AddApplicationsTabsType) => {
