@@ -114,6 +114,7 @@ export const EditProject: React.FC<ApplicationListProps> = ({
                   validationSchema={projectDetailsFormSchema(project)}
                   onSubmit={handleOnSubmit}
                   initialErrors={{ name: "" }}
+                  validateOnBlur={false}
                 >
                   {({
                     isValid,

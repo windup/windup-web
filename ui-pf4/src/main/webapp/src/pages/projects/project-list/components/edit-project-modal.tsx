@@ -79,6 +79,7 @@ export const EditProjectModal: React.FC<EditProjectModalProps> = ({
         validationSchema={projectDetailsFormSchema(project)}
         onSubmit={handleOnSubmit}
         initialErrors={{ name: "" }}
+        validateOnBlur={false}
       >
         {({
           isValid,
