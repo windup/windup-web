@@ -160,6 +160,7 @@ export const AddRuleLabelTabs: React.FC<AddRuleLabelTabsProps> = ({
               validationSchema={RuleLabelServerPathFormSchema()}
               onSubmit={handleOnSubmit}
               initialErrors={{ name: "" }}
+              validateOnBlur={false}
             >
               {({
                 isValid,
