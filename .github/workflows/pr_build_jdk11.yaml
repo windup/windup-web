@@ -28,7 +28,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-windup-build-${{ github.sha }}
       - name: Build Windup on JDK 11
-        run: mvn -B clean install -DskipTests
+        run: ./mvnw -B clean install -DskipTests
 
   windup-rulesets-build:
     runs-on: ubuntu-latest
@@ -53,7 +53,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-windup-build-${{ github.sha }}
       - name: Build Windup Rulesets
-        run: mvn -B clean install -DskipTests
+        run: ./mvnw -B clean install -DskipTests
 
   windup-cli-build:
     runs-on: ubuntu-latest
@@ -70,10 +70,6 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           java-package: jdk
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.5
-        with:
-          maven-version: 3.8.7
       - name: Cache local Maven repository
         uses: actions/cache@v3
         with:
@@ -82,7 +78,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-windup-rulesets-build-${{ github.sha }}
       - name: Build on JDK 11
-        run: mvn -B clean install -DskipTests
+        run: ./mvnw -B clean install -DskipTests
 
   windup-web-build:
     runs-on: ubuntu-latest
@@ -97,10 +93,6 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           java-package: jdk
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.5
-        with:
-          maven-version: 3.8.7
       - name: Cache local Maven repository
         uses: actions/cache@v3
         with:
@@ -109,4 +101,4 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-windup-cli-build-${{ github.sha }}
       - name: Build
-        run: mvn clean install -U -s settings.xml
+        run: ./mvnw clean install -U -s settings.xml

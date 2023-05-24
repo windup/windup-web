@@ -13,7 +13,7 @@ Requirements
 -------------
 
 1. JDK 8
-2. Maven 3.2.5+ (3.3.x recommended)
+2. Maven 3.8.8 (provided by Maven Wrapper)
 
 Environment setup
 -----------------
@@ -93,7 +93,7 @@ windup-maven-plugin \
     git fetch upstream
     git branch --set-upstream-to=upstream/master
     git pull
-    mvn clean install -DskipTests
+    ./mvnw clean install -DskipTests
 done
 cd $BASEDIR
 
@@ -124,7 +124,7 @@ windup-web-distribution \
     git fetch upstream
     git branch --set-upstream-to=upstream/master
     git pull
-    mvn clean install -DskipTests
+    ./mvnw clean install -DskipTests
 done
 cd $BASEDIR
 ```
@@ -133,7 +133,7 @@ cd $BASEDIR
 Running the webapp
 ------------------
 
-- Build: `mvn clean install -DskipTests`
+- Build: `./mvnw clean install -DskipTests`
 - Wildfly/EAP 7 must be run with `-c standalone-full.xml` as Messaging subsystem is required.
 - Execute the CLI script at: scripts/eap-setup.cli on Wildfly/EAP 7
 
@@ -194,11 +194,11 @@ It resolves JAX-RS annotated resources and Java annotated POJOs into OpenAPI sch
 
 To get the OpenAPI specifications file, you can compile this project enabling the `swagger` profile:
 
-- from `windup-web/services` folder execute the command `mvn clean compile -Pswagger`
+- from `windup-web/services` folder execute the command `../mvnw clean compile -Pswagger`
 - in `windup-web/services/target/swagger` folder you'll find `openapi.json` and `openapi.yaml` files with the OpenAPI specifications
 
 If you want to create a MTA Web application that provides the `openapi.json` and `openapi.yaml` files at runtime:
 
-- build this project enabling the `swagger` profile, executing -from `windup-web` folder- the `mvn -DskipTests clean install -Pswagger` command  
+- build this project enabling the `swagger` profile, executing -from `windup-web` folder- the `../mvnw -DskipTests clean install -Pswagger` command  
 - the files will be available at <http://localhost:8080/mta-web/api/openapi.json> and <http://localhost:8080/mta-web/api/openapi.yaml>
 
