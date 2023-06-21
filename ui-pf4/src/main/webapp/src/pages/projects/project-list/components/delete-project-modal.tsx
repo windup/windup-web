@@ -46,7 +46,7 @@ export const DeleteProjectModal: React.FC<DeleteProjectModalProps> = ({
   return (
     <DeleteMatchModal
       isModalOpen={true}
-      title="Project details"
+      title="Project delete confirmation"
       message={`Are you sure you want to delete the project '${project.title}'? This will delete all resources associated with '${project.title}' and cannot be undone. Make sure this is something you really want to do!`}
       matchText={project.title}
       inProgress={isDeleting}
