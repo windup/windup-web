@@ -145,8 +145,14 @@ export const AZURE: TransformationPathOption = {
 
 export const CAMEL: TransformationPathOption = {
   label: "Camel",
-  description: "Rules for the migration from Apache Camel 2 to Apache Camel 3.",
-  options: "camel",
+  description: "Rules to support upgrading to a newer version of Camel.",
+  options: Array.from({ length: 22 }, (_, index) => `3.${index}`)
+    .concat(["4.0"])
+    .map((version) => ({
+      label: `camel:${version}`,
+      value: `camel:${version}`,
+      default: version === "3.21",
+    })),
   iconSrc: multiply,
 };
 

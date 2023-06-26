@@ -130,6 +130,7 @@ export const SelectCard: React.FC<SelectCardProps> = ({
               selections={value}
               isOpen={isSelectOpen}
               direction="down"
+              maxHeight={130}
             >
               {options.map((el, index) => (
                 <SelectOption key={index} value={el.value} />
