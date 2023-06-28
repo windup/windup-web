@@ -11,7 +11,7 @@
 
     <groupId>org.jboss.windup.web</groupId>
     <artifactId>windup-web-parent</artifactId>
-    <version>6.1.10-SNAPSHOT</version>
+    <version>6.1.10.Final</version>
     <packaging>pom</packaging>
 
     <name>Windup Web - Parent</name>
@@ -24,8 +24,8 @@
         <version.findbugs.plugin>3.0.5</version.findbugs.plugin>
         <version.forge>3.10.0.Final</version.forge>
         <version.furnace>2.29.1.Final</version.furnace>
-        <version.windup>6.1.10-SNAPSHOT</version.windup>
-        <version.windup.cli>6.1.10-SNAPSHOT</version.windup.cli>
+        <version.windup>6.1.10.Final</version.windup>
+        <version.windup.cli>6.1.10.Final</version.windup.cli>
         <version.keycloak>18.0.2</version.keycloak>
         <version.wildfly>23.0.2.Final</version.wildfly>
         <version.resteasy>3.15.1.Final</version.resteasy>
