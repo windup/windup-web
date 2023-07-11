@@ -94,7 +94,7 @@ export const LINUX: TransformationPathOption = {
 export const JAKARTA9: TransformationPathOption = {
   label: "Jakarta EE 9",
   description:
-    "A collection of rules to support migrating applications from Java EE 8 to Jakarta EE 9. The rules cover project dependencies, package renaming, updating XML Schema namespaces, the renaming of application configuration properties and bootstrapping files.",
+    "A collection of rules to support migrating applications from Java EE 8 to Jakarta EE 9 (and above). The rules cover project dependencies, package renaming, updating XML Schema namespaces, the renaming of application configuration properties and bootstrapping files.",
   options: "jakarta-ee",
   iconSrc: migration,
 };
