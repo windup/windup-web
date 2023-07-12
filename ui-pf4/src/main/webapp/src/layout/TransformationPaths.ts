@@ -98,6 +98,14 @@ export const JAKARTA9: TransformationPathOption = {
   options: "jakarta-ee",
   iconSrc: migration,
 };
+export const JWS6: TransformationPathOption = {
+  label: "JBoss Web Server 6",
+  description:
+    "A collection of rules to to support migrating applications from JWS 5 to JWS 6",
+  options: "jws6",
+  iconSrc: appOnServer,
+  isNew: true,
+};
 export const RH_RUNTIMES: TransformationPathOption = {
   label: "Spring Boot on Red Hat Runtimes",
   description:
@@ -154,6 +162,7 @@ export const CAMEL: TransformationPathOption = {
       default: version === "3.21",
     })),
   iconSrc: multiply,
+  isNew: true,
 };
 
 export const DISCOVERY: TransformationPathOption = {
@@ -162,7 +171,7 @@ export const DISCOVERY: TransformationPathOption = {
     "It runs an analysis to just discover the technologies and frameworks used within the application(s).",
   options: "discovery",
   iconSrc: search,
-  isNew: true,
+  isNew: false,
 };
 
 export const DEFAULT_TRANSFORMATION_PATHS = [
@@ -173,6 +182,7 @@ export const DEFAULT_TRANSFORMATION_PATHS = [
   OPENJDK,
   LINUX,
   JAKARTA9,
+  JWS6,
   RH_RUNTIMES,
   OPEN_LIBERTY,
   AZURE,
@@ -188,6 +198,7 @@ export const MTA_MTR_TRANSFORMATION_PATHS = [
   OPENJDK,
   LINUX,
   JAKARTA9,
+  JWS6,
   RH_RUNTIMES,
   OPEN_LIBERTY,
   {
