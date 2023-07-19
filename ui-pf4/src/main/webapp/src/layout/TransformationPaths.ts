@@ -101,7 +101,7 @@ export const JAKARTA9: TransformationPathOption = {
 export const JWS6: TransformationPathOption = {
   label: "JBoss Web Server 6",
   description:
-    "A collection of rules to to support migrating applications from JWS 5 to JWS 6",
+    "A collection of rules to support migrating applications from JWS 5 to JWS 6",
   options: "jws6",
   iconSrc: appOnServer,
   isNew: true,
