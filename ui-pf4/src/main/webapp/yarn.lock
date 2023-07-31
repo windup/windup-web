@@ -1859,10 +1859,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@patternfly/patternfly@4.183.1":
-  version "4.183.1"
-  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.183.1.tgz#717ae0f5614605369f0a26bf17d99b993f6f449a"
-  integrity sha512-XJZIG/kcEbIPI/0Q6+Q5ax2m295IpQCppertUQ4RfOSkvJVfjQ4CUNmR/ycgjlGm1DItmYJe/NqVFerNlvzUeg==
+"@patternfly/patternfly@5.0.2":
+  version "5.0.2"
+  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-5.0.2.tgz#f5daf2c98ccb85e6466d42fd61d39ba3c10ed532"
+  integrity sha512-PB8+MLdYVgF1hIOxGmnVsZG+YHUX3RePe5W1oMS4gS00EmSgw1cobr1Qbpy/BqqS8/R9DRN4hZ2FKDT0d5tkFQ==
 
 "@patternfly/react-core@4.198.19":
   version "4.198.19"
