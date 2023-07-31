@@ -25,7 +25,7 @@ export interface TransformationPathOption {
 export const EAP7: TransformationPathOption = {
   label: "Application server migration to EAP",
   description:
-    "Upgrade to the latest Release of JBoss EAP or migrate your applications to JBoss EAP from competitors' Enterprise Application server (e.g.Oracle Weblogic Server).",
+    "Upgrade to the latest Release of EAP 7, or EAP 8, or migrate your applications to JBoss EAP from a competitor's Enterprise Application server.",
   options: [
     {
       label: "JBoss EAP 7",
@@ -67,7 +67,7 @@ export const ORACLE_TO_OPENJDK: TransformationPathOption = {
 export const OPENJDK: TransformationPathOption = {
   label: "OpenJDK",
   description:
-    "Rules to support upgrading the version of OpenJDK. Migrate to OpenJDK 11 or OpenJDK 17.",
+    "Rules to support upgrading the version of OpenJDK. Migrate to OpenJDK 11, OpenJDK 17 or OpenJDK 21.",
   options: [
     {
       label: "OpenJDK 11",
@@ -78,6 +78,11 @@ export const OPENJDK: TransformationPathOption = {
       label: "OpenJDK 17",
       value: "openjdk17",
       default: true,
+    },
+    {
+      label: "OpenJDK 21",
+      value: "openjdk21",
+      default: false,
     },
   ],
   iconSrc: mug,
@@ -104,7 +109,7 @@ export const JWS6: TransformationPathOption = {
     "A collection of rules to support migrating applications from JWS 5 to JWS 6",
   options: "jws6",
   iconSrc: appOnServer,
-  isNew: true,
+  isNew: false,
 };
 export const RH_RUNTIMES: TransformationPathOption = {
   label: "Spring Boot on Red Hat Runtimes",
@@ -162,7 +167,7 @@ export const CAMEL: TransformationPathOption = {
       default: version === "3.21",
     })),
   iconSrc: multiply,
-  isNew: true,
+  isNew: false,
 };
 
 export const DISCOVERY: TransformationPathOption = {
