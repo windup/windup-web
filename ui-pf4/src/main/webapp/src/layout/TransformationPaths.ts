@@ -52,7 +52,7 @@ export const CONTAINERIZATION: TransformationPathOption = {
 export const QUARKUS: TransformationPathOption = {
   label: "Quarkus",
   description:
-    "Rules to support the migration of Spring Boot applications to Quarkus. The rules also identify other, non-Spring Boot,  technologies embedded within applications for which there are equivalent Quarkus extensions.",
+    "Rules to support the migration to Quarkus from other Java frameworks (e.g. Spring Boot and Java EE). The rules also identify technologies embedded within applications for which there are equivalent Quarkus extensions.",
   options: "quarkus",
   iconSrc: migration,
 };
