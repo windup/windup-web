@@ -46,10 +46,10 @@ export const TransformationPath: React.FC<TransformationPathProps> = ({
             </TextContent>
           </StackItem>
           <StackItem
-          style={{
-            // margin: "0px -25px",
-            padding: "5px 5px",
-          }}
+            style={{
+              // margin: "0px -25px",
+              padding: "5px 5px",
+            }}
           >
             <SelectCardGallery
               value={selectedTargets}
