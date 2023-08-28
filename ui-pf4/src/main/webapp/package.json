@@ -10,7 +10,7 @@
     "@babel/plugin-transform-react-jsx": "^7.19.0",
     "@patternfly/patternfly": "4.183.1",
     "@patternfly/react-core": "4.198.19",
-    "@patternfly/react-table": "4.67.19",
+    "@patternfly/react-table": "4.113.4",
     "@react-keycloak/web": "3.4.0",
     "@redhat-cloud-services/frontend-components-notifications": "2.2.2",
     "@testing-library/jest-dom": "^5.16.5",

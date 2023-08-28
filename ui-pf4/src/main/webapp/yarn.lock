@@ -1877,45 +1877,45 @@
     tippy.js "5.1.2"
     tslib "^2.0.0"
 
-"@patternfly/react-core@^4.198.19":
-  version "4.264.0"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.264.0.tgz#8bc2f28858036c8176ef4873dc1c1e6c1deb8094"
-  integrity sha512-tK0BMWxw8nhukev40HZ6q6d02pDnjX7oyA91vHa18aakJUKBWMaerqpG4NZVMoh0tPKX3aLNj+zyCwDALFAZZw==
+"@patternfly/react-core@^4.276.12":
+  version "4.276.12"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.276.12.tgz#0ba2e6b280ae84e0f816d17b9f5eae89a577630b"
+  integrity sha512-bBN2BMFhWjl/27zmTG5z3+6aH7XMO8our9nsaryxuzN5wFn6S8cIDILsw5NY7N8SLOOtmqbFJUgcM5GAn1ZAXg==
   dependencies:
-    "@patternfly/react-icons" "^4.93.0"
-    "@patternfly/react-styles" "^4.92.0"
-    "@patternfly/react-tokens" "^4.94.0"
+    "@patternfly/react-icons" "^4.93.7"
+    "@patternfly/react-styles" "^4.92.8"
+    "@patternfly/react-tokens" "^4.94.7"
     focus-trap "6.9.2"
     react-dropzone "9.0.0"
     tippy.js "5.1.2"
     tslib "^2.0.0"
 
-"@patternfly/react-icons@^4.49.19", "@patternfly/react-icons@^4.93.0":
-  version "4.93.0"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.93.0.tgz#523034461307711e40cb92975a3a7360e8a184db"
-  integrity sha512-OH0vORVioL+HLWMEog8/3u8jsiMCeJ0pFpvRKRhy5Uk4CdAe40k1SOBvXJP6opr+O8TLbz0q3bm8Jsh/bPaCuQ==
+"@patternfly/react-icons@^4.49.19", "@patternfly/react-icons@^4.93.7":
+  version "4.93.7"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.93.7.tgz#130acbcda4835cf0f26802aaddbb75664709ad4b"
+  integrity sha512-3kr35dgba7Qz5CSzmfH0rIjSvBC5xkmiknf3SvVUVxaiVA7KRowID8viYHeZlf3v/Oa3sEewaH830Q0t+nWsZQ==
 
-"@patternfly/react-styles@^4.48.19", "@patternfly/react-styles@^4.92.0":
-  version "4.92.0"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.92.0.tgz#817d06b3bf9a42b485d14fdb2f51dbf565d040b1"
-  integrity sha512-B/f6iyu8UEN1+wRxdC4sLIhvJeyL8SqInDXZmwOIqK8uPJ8Lze7qrbVhkkVzbMF37/oDPVa6dZH8qZFq062LEA==
+"@patternfly/react-styles@^4.48.19", "@patternfly/react-styles@^4.92.8":
+  version "4.92.8"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.92.8.tgz#2f05455dfe8095a16df27c0d185a7f46f9451d74"
+  integrity sha512-K4lUU8O4HiCX9NeuNUIrPgN3wlGERCxJVio+PAjd8hpJD/PKnjFfOJ9u6/Cii3qLy/5ZviWPRNHbGiwA/+YUhg==
 
-"@patternfly/react-table@4.67.19":
-  version "4.67.19"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-table/-/react-table-4.67.19.tgz#a98345c53c8da8ea0708ab944676ec477d1f0b9c"
-  integrity sha512-pAa0tpafLHtICCiM3TDQ89xqQTvkZtRuwJ6+KKSpN1UdEEHy+3j0JjDUcslN+6Lo7stgoLwgWzGmE7bsx4Ys5Q==
+"@patternfly/react-table@4.113.4":
+  version "4.113.4"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-table/-/react-table-4.113.4.tgz#279d5b306cfe0482ff020d9a5967e7ab2a01669a"
+  integrity sha512-WN00JBlJR8VVXpNH/IBmuTj70/Ww4vNQwB67mJ8yPzZ0refgAMqMGHCsp9yo5GImJhcBqQr4xlQNpHpeJIKphQ==
   dependencies:
-    "@patternfly/react-core" "^4.198.19"
-    "@patternfly/react-icons" "^4.49.19"
-    "@patternfly/react-styles" "^4.48.19"
-    "@patternfly/react-tokens" "^4.50.19"
+    "@patternfly/react-core" "^4.276.12"
+    "@patternfly/react-icons" "^4.93.7"
+    "@patternfly/react-styles" "^4.92.8"
+    "@patternfly/react-tokens" "^4.94.7"
     lodash "^4.17.19"
     tslib "^2.0.0"
 
-"@patternfly/react-tokens@^4.50.19", "@patternfly/react-tokens@^4.94.0":
-  version "4.94.0"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.94.0.tgz#d605487667c544a71ab3495a19e3ad2777191943"
-  integrity sha512-fYXxUJZnzpn89K2zzHF0cSncZZVGKrohdb5f5T1wzxwU2NZPVGpvr88xhm+V2Y/fSrrTPwXcP3IIdtNOOtJdZw==
+"@patternfly/react-tokens@^4.50.19", "@patternfly/react-tokens@^4.94.7":
+  version "4.94.7"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.94.7.tgz#4453b9abe91a4ffa38e3ebec28927d9b91e3320c"
+  integrity sha512-h+ducOLDMSxcuec3+YY3x+stM5ZUSnrl/lC/eVmjypil2El08NuE2MNEPMQWdhrod6VRRZFMNqZw/m82iv6U1A==
 
 "@pmmmwh/react-refresh-webpack-plugin@^0.5.3":
   version "0.5.10"
