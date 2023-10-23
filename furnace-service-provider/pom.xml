@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.jboss.windup.web</groupId>
         <artifactId>windup-web-parent</artifactId>
-        <version>6.3.3.Final</version>
+        <version>6.3.4-SNAPSHOT</version>
     </parent>
 
     <artifactId>furnace-service-provider</artifactId>
