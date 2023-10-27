@@ -160,7 +160,7 @@ export const CAMEL: TransformationPathOption = {
   label: "Camel",
   description: "Rules to support upgrading to a newer version of Camel.",
   options: Array.from({ length: 22 }, (_, index) => `3.${index}`)
-    .concat(["4.0"])
+    .concat(["4.0", "4.1"])
     .map((version) => ({
       label: `camel:${version}`,
       value: `camel:${version}`,
