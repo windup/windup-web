@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+//import com.fasterxml.jackson.core.exc.StreamWriteException;
 import org.jboss.windup.web.services.model.WindupExecution;
 
 import java.io.File;
