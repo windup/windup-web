@@ -63,7 +63,8 @@
     "yup": "0.29.3"
   },
   "resolutions": {
-    "@types/react": "^16.9.49"
+    "@types/react": "^16.9.49",
+    "semver": "^7.5.4"
   },
   "scripts": {
     "start": "react-scripts start",
