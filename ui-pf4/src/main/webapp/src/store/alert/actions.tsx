@@ -13,8 +13,8 @@ export const alertFetchEndpoint = (err: AxiosError) => {
   if (err.response && err.response.data) {
     if (typeof err.response.data === "string") {
       errorDescription = err.response.data;
-    } else if (err.response.data.error) {
-      errorDescription = err.response.data.error;
+    } else if ((err.response.data as any).error) {
+      errorDescription = (err.response.data as any).error;
     }
   }
   return (dispatch: Dispatch) => {
