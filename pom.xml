@@ -26,7 +26,7 @@
         <version.furnace>2.29.1.Final</version.furnace>
         <version.windup>6.4.0-SNAPSHOT</version.windup>
         <version.windup.cli>6.4.0-SNAPSHOT</version.windup.cli>
-        <version.keycloak>22.0.5</version.keycloak>
+        <version.keycloak>22.0.10</version.keycloak>
         <wildfly.groupId>org.wildfly</wildfly.groupId>
         <wildfly.artifactId>wildfly-dist</wildfly.artifactId>
         <version.wildfly>23.0.2.Final</version.wildfly>
