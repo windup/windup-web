@@ -149,8 +149,8 @@ export const getErrorsFromLabelProviderEntity = (
 
 // Axios error
 export const getAxiosErrorMessage = (axiosError: AxiosError) => {
-  if (axiosError.response?.data.message) {
-    return axiosError.response?.data.message;
+  if ((axiosError.response?.data as any).message) {
+    return (axiosError.response?.data as any).message;
   }
   return axiosError.message;
 };
