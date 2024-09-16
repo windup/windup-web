@@ -313,7 +313,8 @@ export const CustomRules: React.FC<CustomRulesProps> = ({
                     isFetchingProject ||
                     isFetchingRules ||
                     isAnalysisContextBeingSaved ||
-                    errors.length > 0
+                    errors.length > 0 ||
+                    numberOfRules === 0
                   }
                 />
               ),
