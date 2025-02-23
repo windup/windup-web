@@ -8,7 +8,7 @@
     "@babel/core": "^7.20.2",
     "@babel/plugin-syntax-flow": "^7.18.6",
     "@babel/plugin-transform-react-jsx": "^7.19.0",
-    "@patternfly/patternfly": "4.183.1",
+    "@patternfly/patternfly": "5.1.0",
     "@patternfly/react-core": "4.198.19",
     "@patternfly/react-table": "4.67.19",
     "@react-keycloak/web": "3.4.0",
